@@ -31,9 +31,9 @@ namespace cochesApi.DataAccess.Queries
                     where p.BranchId == branchId && p.TypeCarId == typeCarId && p.Day.Date == date.Date
                     select p.AvailableCars).First();
         }
-        public IQueryable GetPlanningsByBranchByTypeCar(int branchId, int typeCarId){
+        public IQueryable GetPlanningsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime initialDate, DateTime finalDate){
             return (from p in _context.Plannings
-                            where p.BranchId == branchId && p.TypeCarId == typeCarId
+                            where p.BranchId == branchId && p.TypeCarId == typeCarId && (p.Day.Date >= initialDate.Date && p.Day.Date <= finalDate.Date)
                             select p);
         }
     }

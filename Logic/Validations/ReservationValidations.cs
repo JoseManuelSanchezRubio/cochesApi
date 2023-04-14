@@ -9,13 +9,13 @@ namespace cochesApi.Logic.Validations
 {
     public class ReservationResponseValidation
     {
-        public Reservation? Reservation { get; set; }
+        public ReservationResponse? ReservationResponse { get; set; }
         public bool Status { get; set; }
         public string? Message { get; set; }
 
-        public ReservationResponseValidation(Reservation? reservation)
+        public ReservationResponseValidation(ReservationResponse? reservationResponse)
         {
-            Reservation = reservation;
+            ReservationResponse = ReservationResponse;
             Status = true;
             Message = "OK";
         }
@@ -79,7 +79,7 @@ namespace cochesApi.Logic.Validations
         public ReservationResponseValidation PutReservation(int id, ReservationRequest reservationRequest)
         {
             var reservation = queriesReservation.GetReservation(id);
-            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservation);
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(null); // Cambiar en un futuro
 
             if (reservation == null)
             {
@@ -97,7 +97,7 @@ namespace cochesApi.Logic.Validations
             return reservationResponseValidation;
 
         }
-        public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)
+        /* public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)
         {
             //Comprobaciones
             var typeCar = queriesTypeCar.GetTypeCar(reservationRequest.TypeCarId);
@@ -209,15 +209,113 @@ namespace cochesApi.Logic.Validations
                 reservationResponseValidation.Message="No cars available";
                 return reservationResponseValidation;
             }
+        } */
+        public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)
+        {
+            //Comprobaciones
+            var typeCar = queriesTypeCar.GetTypeCar(reservationRequest.TypeCarId);
+            var branch = queriesBranch.GetBranch(reservationRequest.BranchId);
+            var customer = queriesCustomer.GetCustomer(reservationRequest.CustomerId);
+
+
+            ReservationResponseValidation rrv = new ReservationResponseValidation(null);
+
+            if (reservationRequest.InitialDate > reservationRequest.FinalDate)
+            {
+                rrv.Status = false;
+                rrv.Message = "Wrong dates";
+                return rrv;
+            }
+            if (typeCar?.Cars == null)
+            {
+                rrv.Status = false;
+                rrv.Message = "TypeCar empty";
+                return rrv;
+            }
+            if (branch == null)
+            {
+                rrv.Status = false;
+                rrv.Message = "Branch does not exist";
+                return rrv;
+            }
+            if (customer == null)
+            {
+                rrv.Status = false;
+                rrv.Message = "Customer does not exist";
+                return rrv;
+            }
+            var plannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(reservationRequest.BranchId, reservationRequest.TypeCarId, reservationRequest.InitialDate, reservationRequest.FinalDate);
+
+            foreach (Planning planning in plannings)
+            {
+                if (planning.AvailableCars == 0)
+                {
+                    rrv.Status = false;
+                    rrv.Message = "No cars available";
+                    return rrv;
+                }
+            }
+
+
+            var cars = (from c in typeCar.Cars
+                        where c.BranchId == reservationRequest.BranchId
+                        select c);
+
+            Car? carToBook = null;
+            //Buscamos cuál es el primer coche disponible para asignarlo a la reserva
+            foreach (Car car in cars)
+            {
+                if (isCarAvailable(car, reservationRequest.InitialDate, reservationRequest.FinalDate))
+                {
+                    carToBook = car;
+                }
+            }
+
+
+            Reservation reservation = new Reservation();
+            reservation.InitialDate = reservationRequest.InitialDate;
+            reservation.FinalDate = reservationRequest.FinalDate;
+            reservation.CarId = carToBook!.Id;
+            reservation.CustomerId = reservationRequest.CustomerId;
+            reservation.BranchId = reservation.BranchId;
+            reservation.Car = carToBook;
+            reservation.Customer = customer;
+            reservation.Branch = branch;
+
+            customer.Reservations?.Add(reservation);
+            branch.Reservations?.Add(reservation);
+            carToBook.Reservations?.Add(reservation);
+
+            queriesReservation.AddReservation(reservation);
+
+            foreach (Planning planning in plannings)
+            {
+                planning.AvailableCars--;
+            }
+
+            queries.SaveChangesAsync();
+
+            ReservationResponse reservationResponse = new ReservationResponse();
+            reservationResponse.InitialDate = reservation.InitialDate;
+            reservationResponse.FinalDate = reservation.FinalDate;
+            reservationResponse.CarId = reservation.CarId;
+            reservationResponse.CustomerId = reservation.CustomerId;
+            reservationResponse.BranchId = reservation.BranchId;
+
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
+
+
+            return reservationResponseValidation;
+
         }
         public ReservationResponseValidation DeleteReservation(int id)
         {
             var reservation = queriesReservation.GetReservation(id);
-            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservation);
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(null); // Cambiar en un futuro
             if (reservation == null)
             {
-                reservationResponseValidation.Status=false;
-                reservationResponseValidation.Message="Reservation does not exist";
+                reservationResponseValidation.Status = false;
+                reservationResponseValidation.Message = "Reservation does not exist";
                 return reservationResponseValidation;
             }
 
@@ -226,7 +324,8 @@ namespace cochesApi.Logic.Validations
 
             return reservationResponseValidation;
         }
-        public ActionResult<List<ReservationResponse>> GetReservationsByBranch(int id){
+        public ActionResult<List<ReservationResponse>> GetReservationsByBranch(int id)
+        {
 
             var reservations = queriesReservation.GetReservations();
             var branch = queriesBranch.GetBranch(id);
@@ -252,11 +351,12 @@ namespace cochesApi.Logic.Validations
             return reservationsList;
         }
 
-        public ActionResult<List<ReservationResponse>> GetReservationsByCar(int id){
+        public ActionResult<List<ReservationResponse>> GetReservationsByCar(int id)
+        {
 
             var reservations = queriesReservation.GetReservations();
             var car = queriesCar.GetCar(id);
-            
+
             if (car == null) return null!;
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
@@ -278,7 +378,8 @@ namespace cochesApi.Logic.Validations
             return reservationsList;
         }
 
-        public ActionResult<List<ReservationResponse>> GetReservationsByCustomer(int id){
+        public ActionResult<List<ReservationResponse>> GetReservationsByCustomer(int id)
+        {
 
             var reservations = queriesReservation.GetReservations();
             var customer = queriesCustomer.GetCustomer(id);
@@ -303,7 +404,8 @@ namespace cochesApi.Logic.Validations
             }
             return reservationsList;
         }
-        public ActionResult<List<ReservationResponse>> GetReservationsByDate(DateTime date){
+        public ActionResult<List<ReservationResponse>> GetReservationsByDate(DateTime date)
+        {
 
             var reservations = queriesReservation.GetReservations();
 
