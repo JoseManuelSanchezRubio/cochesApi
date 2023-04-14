@@ -13,13 +13,13 @@ namespace cochesApi.Logic.Validations
 {
     public class CustomerResponseValidation
     {
-        public Customer? Customer { get; set; }
+        public CustomerRequest? CustomerResponse { get; set; }
         public bool Status { get; set; }
         public string? Message { get; set; }
 
-        public CustomerResponseValidation(Customer? customer)
+        public CustomerResponseValidation(CustomerRequest? customerResponse)
         {
-            Customer = customer;
+            CustomerResponse = customerResponse;
             Status = true;
             Message = "OK";
         }
@@ -69,7 +69,7 @@ namespace cochesApi.Logic.Validations
         public CustomerResponseValidation PutCustomer(int id, CustomerRequest customerRequest)
         {
             var customer = queriesCustomer.GetCustomer(id);
-            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customer);
+            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(null); // Cambiar en un futuro
 
             if (customer == null)
             {
@@ -97,7 +97,12 @@ namespace cochesApi.Logic.Validations
             customer.Email = customerRequest.Email;
             customer.Password = BCrypt.Net.BCrypt.HashPassword(customerRequest.Password);
 
-            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customer);
+            CustomerRequest customerResponse = new CustomerRequest();
+            customerResponse.Name = customerRequest.Name;
+            customerResponse.Surname = customerRequest.Surname;
+            customerResponse.Email = customerRequest.Email;
+
+            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
 
             queriesCustomer.AddCustomer(customer);
             queries.SaveChangesAsync();
@@ -107,7 +112,7 @@ namespace cochesApi.Logic.Validations
         public CustomerResponseValidation DeleteCustomer(int id)
         {
             var customer = queriesCustomer.GetCustomer(id);
-            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customer);
+            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(null); // Cambiar en un futuro
             if (customer == null)
             {
                 customerResponseValidation.Status = false;

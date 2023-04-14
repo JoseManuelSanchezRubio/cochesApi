@@ -296,11 +296,11 @@ namespace cochesApi.Logic.Validations
             queries.SaveChangesAsync();
 
             ReservationResponse reservationResponse = new ReservationResponse();
-            reservationResponse.InitialDate = reservation.InitialDate;
-            reservationResponse.FinalDate = reservation.FinalDate;
-            reservationResponse.CarId = reservation.CarId;
-            reservationResponse.CustomerId = reservation.CustomerId;
-            reservationResponse.BranchId = reservation.BranchId;
+            reservationResponse.InitialDate = reservationRequest.InitialDate;
+            reservationResponse.FinalDate = reservationRequest.FinalDate;
+            reservationResponse.CarId = carToBook.Id;
+            reservationResponse.CustomerId = reservationRequest.CustomerId;
+            reservationResponse.BranchId = reservationRequest.BranchId;
 
             ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
 

@@ -9,13 +9,13 @@ namespace cochesApi.Logic.Validations
 {
     public class BranchResponseValidation
     {
-        public Branch? Branch { get; set; }
+        public BranchRequest? BranchResponse { get; set; }
         public bool Status { get; set; }
         public string? Message { get; set; }
 
-        public BranchResponseValidation(Branch? branch)
+        public BranchResponseValidation(BranchRequest? branchResponse)
         {
-            Branch = branch;
+            BranchResponse = branchResponse;
             Status = true;
             Message = "OK";
         }
@@ -63,7 +63,7 @@ namespace cochesApi.Logic.Validations
         public BranchResponseValidation PutBranch(int id, BranchRequest branchRequest)
         {
             var branch = queriesBranch.GetBranch(id);
-            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branch);
+            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(null); // Cambiar en un futuro
 
             if (branch == null)
             {
@@ -87,10 +87,10 @@ namespace cochesApi.Logic.Validations
             Branch branch = new Branch();
             branch.Name = branchRequest.Name;
             branch.Location = branchRequest.Location;
-            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branch);
 
             queriesBranch.AddBranch(branch);
             queries.SaveChangesAsync();
+            
 
             var branchh = queriesBranch.GetBranch(branch.Id); //esto es para poder coger el id del branch
 
@@ -112,12 +112,19 @@ namespace cochesApi.Logic.Validations
             }
 
             queries.SaveChangesAsync();
+
+            BranchRequest branchResponse = new BranchRequest();
+            branchResponse.Name = branchRequest.Name;
+            branchResponse.Location = branchRequest.Location;
+
+            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchResponse);
+
             return branchResponseValidation;
         }
         public BranchResponseValidation DeleteBranch(int id)
         {
             var branch = queriesBranch.GetBranch(id);
-            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branch);
+            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(null); // Cambiar en un futuro
 
             if (branch == null)
             {

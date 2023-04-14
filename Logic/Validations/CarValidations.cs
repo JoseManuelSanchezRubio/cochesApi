@@ -9,13 +9,13 @@ namespace cochesApi.Logic.Validations
 {
     public class CarResponseValidation
     {
-        public Car? Car { get; set; }
+        public CarResponse? CarResponse { get; set; }
         public bool Status { get; set; }
         public string? Message { get; set; }
 
-        public CarResponseValidation(Car? car)
+        public CarResponseValidation(CarResponse? carResponse)
         {
-            Car = car;
+            CarResponse = carResponse;
             Status = true;
             Message = "OK";
         }
@@ -75,7 +75,7 @@ namespace cochesApi.Logic.Validations
             var branch = queriesBranch.GetBranch(carRequest.BranchId);
             var typeCar = queriesTypeCar.GetTypeCar(carRequest.TypeCarId);
 
-            CarResponseValidation carResponseValidation = new CarResponseValidation(car);
+            CarResponseValidation carResponseValidation = new CarResponseValidation(null); // Cambiar en un futuro
 
             if (branch == null)
             {
@@ -126,7 +126,14 @@ namespace cochesApi.Logic.Validations
             branch!.Cars.Add(car);
             typeCar!.Cars.Add(car);
 
-            CarResponseValidation carResponseValidation = new CarResponseValidation(car);
+            CarResponse carResponse = new CarResponse();
+            carResponse.BranchId = carRequest.BranchId;
+            carResponse.TypeCarId = carRequest.TypeCarId;
+            car.Model = carRequest.Model;
+            car.Brand = carRequest.Brand;
+
+
+            CarResponseValidation carResponseValidation = new CarResponseValidation(carResponse);
 
             if (branch == null)
             {
@@ -153,14 +160,14 @@ namespace cochesApi.Logic.Validations
             queriesCar.AddCar(car);
             queries.SaveChangesAsync();
 
-            //return CreatedAtAction("GetCar", new { id = car.Id }, car);
+            
             return carResponseValidation;
         }
         public CarResponseValidation DeleteCar(int id)
         {
             var car = queriesCar.GetCar(id);
 
-            CarResponseValidation carResponseValidation = new CarResponseValidation(car);
+            CarResponseValidation carResponseValidation = new CarResponseValidation(null); // Cambiar en un futuro
 
             if (car == null)
             {

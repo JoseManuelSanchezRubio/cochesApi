@@ -9,13 +9,13 @@ namespace cochesApi.Logic.Validations
 {
     public class TypeCarResponseValidation
     {
-        public TypeCar? TypeCar { get; set; }
+        public TypeCarRequest? TypeCarResponse { get; set; }
         public bool Status { get; set; }
         public string? Message { get; set; }
 
-        public TypeCarResponseValidation(TypeCar? typeCar)
+        public TypeCarResponseValidation(TypeCarRequest? typeCarResponse)
         {
-            TypeCar = typeCar;
+            TypeCarResponse = typeCarResponse;
             Status = true;
             Message = "OK";
         }
@@ -59,7 +59,7 @@ namespace cochesApi.Logic.Validations
         public TypeCarResponseValidation PutTypeCar(int id, TypeCarRequest typeCarRequest)
         {
             var typeCar = queriesTypeCar.GetTypeCar(id);
-            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCar);
+            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(null); // Cambiar en un futuro
 
             if (typeCar == null)
             {
@@ -82,7 +82,9 @@ namespace cochesApi.Logic.Validations
             TypeCar typeCar = new TypeCar();
             typeCar.Name = typeCarRequest.Name;
 
-            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCar);
+            TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
+
+            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 
             queriesTypeCar.AddTypeCar(typeCar);
             queries.SaveChangesAsync();
@@ -92,7 +94,7 @@ namespace cochesApi.Logic.Validations
         public TypeCarResponseValidation DeleteTypeCar(int id)
         {
             var typeCar = queriesTypeCar.GetTypeCar(id);
-            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCar);
+            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(null); // Cambiar en un futuro
             if (typeCar == null)
             {
                 typeCarResponseValidation.Status = false;
