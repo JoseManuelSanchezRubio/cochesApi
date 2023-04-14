@@ -12,6 +12,7 @@ namespace cochesApi.Logic.Interfaces
         Car GetCar(int id);
         void RemoveCar(Car car);
         void AddCar(Car car);
+        List<Car> GetAvailableCarsByBranch(int id);
     }
     
 }

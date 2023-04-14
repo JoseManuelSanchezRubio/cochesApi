@@ -97,119 +97,7 @@ namespace cochesApi.Logic.Validations
             return reservationResponseValidation;
 
         }
-        /* public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)
-        {
-            //Comprobaciones
-            var typeCar = queriesTypeCar.GetTypeCar(reservationRequest.TypeCarId);
-            var branch = queriesBranch.GetBranch(reservationRequest.BranchId);
-            var customer = queriesCustomer.GetCustomer(reservationRequest.CustomerId);
-            
-
-            ReservationResponseValidation rrq = new ReservationResponseValidation(null);
-
-            if (reservationRequest.InitialDate > reservationRequest.FinalDate){
-                rrq.Status=false;
-                rrq.Message="Wrong dates";
-                return rrq;
-            }
-            if (typeCar?.Cars == null){
-                rrq.Status=false;
-                rrq.Message="TypeCar empty";
-                return rrq;
-            }
-            if (branch == null){
-                rrq.Status=false;
-                rrq.Message="Branch does not exist";
-                return rrq;
-            }
-            if (customer == null){
-                rrq.Status=false;
-                rrq.Message="Customer does not exist";
-                return rrq;
-            }
-            if (queriesPlanning.GetAvailableCarsByBranchByTypeCarByDate(reservationRequest.BranchId, reservationRequest.TypeCarId, reservationRequest.InitialDate)==0){
-                rrq.Status=false;
-                rrq.Message="No typeCar available";
-                return rrq;
-            }
-
-
-            var cars = (from t in typeCar.Cars
-                        where t.BranchId == reservationRequest.BranchId
-                        select t);
-
-            if (cars == null){
-                rrq.Status=false;
-                rrq.Message="No cars available in that branch";
-                return rrq;
-            }
-
-            Car? carToBook = null;
-            //Buscamos cuál es el primer coche disponible para asignarlo a la reserva
-            foreach (Car car in cars)
-            {
-                if (isCarAvailable(car, reservationRequest.InitialDate, reservationRequest.FinalDate))
-                {
-                    carToBook = car;
-                }
-            }
-
-            var plannings = queriesPlanning.GetPlanningsByBranchByTypeCar(reservationRequest.BranchId, reservationRequest.TypeCarId);
-
-
-            bool booked = false;
-            bool stop = false;
-            Reservation reservation = new Reservation();
-            foreach (Planning planning in plannings) //Recorremos el planning para ver si hay coches disponibles
-            {
-                if (planning.Day.Date == reservationRequest.InitialDate.Date && planning.AvailableCars > 0 && !stop)
-                {
-                    reservation.InitialDate = reservationRequest.InitialDate;
-                    reservation.FinalDate = reservationRequest.FinalDate;
-                    reservation.CarId = carToBook!.Id;
-                    reservation.CustomerId = reservationRequest.CustomerId;
-                    reservation.BranchId = reservation.BranchId;
-                    reservation.Car = carToBook;
-                    reservation.Customer = customer;
-                    reservation.Branch = branch;
-
-                    customer.Reservations?.Add(reservation);
-                    branch.Reservations?.Add(reservation);
-                    carToBook.Reservations?.Add(reservation);
-
-                    queriesReservation.AddReservation(reservation);
-
-                    booked = true;
-                    stop = true;
-
-                    queries.SaveChangesAsync();
-
-                }
-            }
-
-
-            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservation);
-
-            if (booked)
-            {
-                foreach (Planning planning in plannings) //Restamos un coche al planning
-                {
-                    if (planning.Day.Date >= reservationRequest.InitialDate.Date && planning.Day.Date <= reservationRequest.FinalDate.Date)
-                    {
-                        planning.AvailableCars--;
-                    }
-                }
-                queries.SaveChangesAsync();
-                
-                return reservationResponseValidation;
-            }
-            else
-            {
-                reservationResponseValidation.Status=false;
-                reservationResponseValidation.Message="No cars available";
-                return reservationResponseValidation;
-            }
-        } */
+        
         public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)
         {
             //Comprobaciones
@@ -244,6 +132,12 @@ namespace cochesApi.Logic.Validations
                 rrv.Message = "Customer does not exist";
                 return rrv;
             }
+            /* if(queriesPlanning.GetAvailableCarsByBranchByTypeCarByDate(reservationRequest.BranchId, reservationRequest.TypeCarId, reservationRequest.InitialDate) == 0){
+                rrv.Status = false;
+                rrv.Message = "Customer does not exist";
+                return rrv;
+            } */
+
             var plannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(reservationRequest.BranchId, reservationRequest.TypeCarId, reservationRequest.InitialDate, reservationRequest.FinalDate);
 
             foreach (Planning planning in plannings)

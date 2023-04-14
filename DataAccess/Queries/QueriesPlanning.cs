@@ -26,7 +26,7 @@ namespace cochesApi.DataAccess.Queries
         public void AddPlanning(Planning planning){
             _context.Plannings.Add(planning);
         }
-        public int GetAvailableCarsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime date){
+        public int GetNumberOfAvailableCarsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime date){
             return (from p in _context.Plannings
                     where p.BranchId == branchId && p.TypeCarId == typeCarId && p.Day.Date == date.Date
                     select p.AvailableCars).First();

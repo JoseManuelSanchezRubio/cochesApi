@@ -191,11 +191,11 @@ namespace cochesApi.Logic.Validations
 
             return carResponseValidation;
         }
-        public ActionResult<int> GetAvailableCarsByBranchAndDate(int branchId, int typeCarId, DateTime date){
+        public ActionResult<int> GetNumberOfAvailableCarsByBranchAndDate(int branchId, int typeCarId, DateTime date){
             if(queriesBranch.GetBranch(branchId)==null) return -1;
             if(queriesTypeCar.GetTypeCar(typeCarId)==null) return -2;
 
-            return queriesPlanning.GetAvailableCarsByBranchByTypeCarByDate(branchId, typeCarId, date);
+            return queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(branchId, typeCarId, date);
         }
 
         public ActionResult<List<CarResponse>> GetCarsByBranch(int id){
@@ -243,6 +243,46 @@ namespace cochesApi.Logic.Validations
                 }
             }
             return carsList;
+        }
+        public ActionResult<List<CarResponse>> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate){
+            var branch = queriesBranch.GetBranch(branchId);
+
+            if(branch == null) return null!;
+
+            if(initialDate > finalDate) return null!;
+
+            var cars = queriesCar.GetAvailableCarsByBranch(branchId);
+
+            List<CarResponse> availableCars = new List<CarResponse>();
+            foreach (Car car in cars)
+            {
+                if(isCarAvailable(car, initialDate, finalDate)){
+                    CarResponse carResponse = new CarResponse();
+                    carResponse.Id = car.Id;
+                    carResponse.Brand = car.Brand;
+                    carResponse.Model = car.Model;
+                    carResponse.BranchId = car.BranchId;
+                    carResponse.TypeCarId = car.TypeCarId;
+                    availableCars.Add(carResponse);
+                }
+            }
+
+            return availableCars;
+
+        }
+        private bool isCarAvailable(Car car, DateTime? initialDate, DateTime? finalDate)
+        {
+            if (car.Reservations == null) return true;
+            foreach (Reservation reservation in car.Reservations)
+            {
+                if (initialDate < reservation.InitialDate && finalDate > reservation.FinalDate ||
+                    initialDate < reservation.InitialDate && finalDate < reservation.FinalDate && initialDate < reservation.FinalDate && finalDate > reservation.InitialDate ||
+                    initialDate > reservation.InitialDate && initialDate < reservation.FinalDate)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

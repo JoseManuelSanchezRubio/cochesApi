@@ -25,6 +25,9 @@ namespace cochesApi.DataAccess.Queries
         public void AddCar(Car car){
             _context.Cars.Add(car);
         }
+        public List<Car> GetAvailableCarsByBranch(int id){
+            return _context.Cars.Where(c => c.BranchId == id).ToList();
+        }
         
 
 

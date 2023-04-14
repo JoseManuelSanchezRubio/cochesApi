@@ -12,7 +12,7 @@ namespace cochesApi.Logic.Interfaces
         Planning GetPlanning(int id);
         void RemovePlanning(Planning planning);
         void AddPlanning(Planning planning);
-        int GetAvailableCarsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime date);
+        int GetNumberOfAvailableCarsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime date);
         IQueryable GetPlanningsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime initialDate, DateTime finalDate);
     }
     

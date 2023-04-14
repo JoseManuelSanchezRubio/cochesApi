@@ -17,8 +17,9 @@ namespace cochesApi.Controllers
     public class CarController : ControllerBase
     {
         private ICar carValidation;
-        public CarController(ICar _car){
-            carValidation=_car;
+        public CarController(ICar _car)
+        {
+            carValidation = _car;
         }
 
         // GET: api/Car
@@ -77,15 +78,12 @@ namespace cochesApi.Controllers
         }
 
 
-
-        [HttpGet("availability/{branchId}/{typeCarId}/{date}")]
-        public ActionResult<int> GetAvailableCarsByBranchAndDate(int branchId, int typeCarId, DateTime date)
+        [HttpGet("availability/{branchId}/{initialDate}/{finalDate}")]
+        public ActionResult<List<CarResponse>> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
         {
-            /* if (carValidation.GetAvailableCarsByBranchAndDate(branchId, typeCarId, date) == -1) return Problem("Branch does not exist");
-
-            if (carValidation.GetAvailableCarsByBranchAndDate(branchId, typeCarId, date) == -2) return Problem("TypeCar does not exist"); */
-
-            return carValidation.GetAvailableCarsByBranchAndDate(branchId, typeCarId, date);
+            if(carValidation.GetAvailableCarsByBranchAndDate(branchId, initialDate, finalDate)==null) return Problem("Wrong data");
+            
+            return carValidation.GetAvailableCarsByBranchAndDate(branchId, initialDate, finalDate);
         }
     }
 }
