@@ -56,7 +56,12 @@ namespace cochesApi.Controllers
         {
             return reservationValidation.PostReservation(reservationRequest);
         }
-
+        [HttpPost("reservationOnDifferentBranch")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "customer")]
+        public ReservationResponseValidation PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch){
+            return reservationValidation.PostReservationOnDifferentBranch(reservationRequestDifferentBranch);
+        }
         // DELETE: api/Reservation/5
         [HttpDelete("{id}")]
         public ReservationResponseValidation DeleteReservation(int id)

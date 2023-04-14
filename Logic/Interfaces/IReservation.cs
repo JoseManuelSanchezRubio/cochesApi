@@ -11,6 +11,7 @@ namespace cochesApi.Logic.Interfaces
         ActionResult<ReservationResponse> GetReservation(int id);
         ReservationResponseValidation PutReservation(int id, ReservationRequest reservationRequest);
         ReservationResponseValidation PostReservation(ReservationRequest reservationRequest);
+        ReservationResponseValidation PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch);
         ReservationResponseValidation DeleteReservation(int id);
         ActionResult<List<ReservationResponse>> GetReservationsByBranch(int id);
         ActionResult<List<ReservationResponse>> GetReservationsByCar(int id);

@@ -14,6 +14,7 @@ namespace cochesApi.Logic.Interfaces
         void AddPlanning(Planning planning);
         int GetNumberOfAvailableCarsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime date);
         IQueryable GetPlanningsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime initialDate, DateTime finalDate);
+        IQueryable GetOlderPlanningsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime date);
     }
     
 }

@@ -97,7 +97,7 @@ namespace cochesApi.Logic.Validations
             return reservationResponseValidation;
 
         }
-        
+
         public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)
         {
             //Comprobaciones
@@ -201,6 +201,118 @@ namespace cochesApi.Logic.Validations
 
             return reservationResponseValidation;
 
+        }
+
+        public ReservationResponseValidation PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch)
+        {
+
+            var typeCar = queriesTypeCar.GetTypeCar(reservationRequestDifferentBranch.TypeCarId);
+            var pickUpBranch = queriesBranch.GetBranch(reservationRequestDifferentBranch.PickUpBranchId);
+            var returnBranch = queriesBranch.GetBranch(reservationRequestDifferentBranch.ReturnBranchId);
+            var customer = queriesCustomer.GetCustomer(reservationRequestDifferentBranch.CustomerId);
+
+            ReservationResponseValidation rrv = new ReservationResponseValidation(null);
+
+            if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate)
+            {
+                rrv.Status = false;
+                rrv.Message = "Wrong dates";
+                return rrv;
+            }
+            if (typeCar?.Cars == null)
+            {
+                rrv.Status = false;
+                rrv.Message = "TypeCar empty";
+                return rrv;
+            }
+            if (pickUpBranch == null)
+            {
+                rrv.Status = false;
+                rrv.Message = "PickUpBranch does not exist";
+                return rrv;
+            }
+            if (returnBranch == null)
+            {
+                rrv.Status = false;
+                rrv.Message = "ReturnBranch does not exist";
+                return rrv;
+            }
+            if (customer == null)
+            {
+                rrv.Status = false;
+                rrv.Message = "Customer does not exist";
+                return rrv;
+            }
+            if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0)
+            {
+                rrv.Status = false;
+                rrv.Message = "No cars available";
+                return rrv;
+            }
+
+            
+
+
+
+
+            var cars = (from c in typeCar.Cars
+                        where c.BranchId == reservationRequestDifferentBranch.PickUpBranchId
+                        select c);
+
+            Car? carToBook = null;
+            //Buscamos cuál es el primer coche disponible para asignarlo a la reserva
+            foreach (Car car in cars)
+            {
+                if (isCarAvailable(car, reservationRequestDifferentBranch.InitialDate, reservationRequestDifferentBranch.FinalDate))
+                {
+                    carToBook = car;
+                }
+            }
+
+
+            Reservation reservation = new Reservation();
+            reservation.InitialDate = reservationRequestDifferentBranch.InitialDate;
+            reservation.FinalDate = reservationRequestDifferentBranch.FinalDate;
+            reservation.CarId = carToBook!.Id;
+            reservation.CustomerId = reservationRequestDifferentBranch.CustomerId;
+            reservation.BranchId = reservation.BranchId;
+            reservation.Car = carToBook;
+            reservation.Customer = customer;
+            reservation.Branch = pickUpBranch;
+
+            customer.Reservations?.Add(reservation);
+            pickUpBranch.Reservations?.Add(reservation);
+            carToBook.Reservations?.Add(reservation);
+
+            queriesReservation.AddReservation(reservation);           
+
+            var olderPlanningsPickUpBranch = queriesPlanning.GetOlderPlanningsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate.AddDays(-1));
+
+            foreach (Planning planning in olderPlanningsPickUpBranch)
+            {
+                planning.AvailableCars--;
+            }
+
+            var olderPlanningsReturnBranch = queriesPlanning.GetOlderPlanningsByBranchByTypeCarByDate(reservationRequestDifferentBranch.ReturnBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.FinalDate);
+
+            foreach (Planning planning in olderPlanningsReturnBranch)
+            {
+                planning.AvailableCars++;
+            }
+
+            queries.SaveChangesAsync();
+
+            ReservationResponse reservationResponse = new ReservationResponse();
+            reservationResponse.InitialDate = reservationRequestDifferentBranch.InitialDate;
+            reservationResponse.FinalDate = reservationRequestDifferentBranch.FinalDate;
+            reservationResponse.CarId = carToBook.Id;
+            reservationResponse.CustomerId = reservationRequestDifferentBranch.CustomerId;
+            reservationResponse.BranchId = reservationRequestDifferentBranch.PickUpBranchId;
+
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
+
+
+            return reservationResponseValidation;
         }
         public ReservationResponseValidation DeleteReservation(int id)
         {
