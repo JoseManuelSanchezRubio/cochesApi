@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using cochesApi.Logic.Models;
-using System.Data;
-using Microsoft.Data.Sqlite;
 
 namespace DataAccess.Data
 {
@@ -15,17 +13,17 @@ namespace DataAccess.Data
         {
 
         }
-        public myAppContext(){
-            
-        }
+        public myAppContext()
+        {
 
+        }
 
         public DbSet<Branch> Branches { get; set; } = null!;
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<Car> Cars { get; set; } = null!;
         public DbSet<Reservation> Reservations { get; set; } = null!;
         public DbSet<TypeCar> TypeCars { get; set; } = null!;
-        public DbSet<Planning> Plannings { get; set; } = default!;
+        public DbSet<Planning> Plannings { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,7 +38,6 @@ namespace DataAccess.Data
                 .WithOne(e => e.Branch)
                 .HasForeignKey(e => e.BranchId)
                 .IsRequired();
-
 
 
             modelBuilder.Entity<Car>()
@@ -58,7 +55,6 @@ namespace DataAccess.Data
                 .WithMany(e => e.Cars)
                 .HasForeignKey(e => e.TypeCarId)
                 .IsRequired();
-
 
 
             modelBuilder.Entity<Customer>()
@@ -92,9 +88,5 @@ namespace DataAccess.Data
                 .IsRequired();
 
         }
-
-
-
-
     }
 }

@@ -29,6 +29,7 @@ namespace cochesApi.Logic.Validations
                 CustomerRequest customerRequest = new CustomerRequest();
                 customerRequest.Name = customer.Name;
                 customerRequest.Surname = customer.Surname;
+                customerRequest.Age = customer.Age;
                 customerRequest.Email = customer.Email;
                 customersRequest.Add(customerRequest);
             }
@@ -43,6 +44,7 @@ namespace cochesApi.Logic.Validations
             CustomerRequest customerRequest = new CustomerRequest();
             customerRequest.Name = customer.Name;
             customerRequest.Surname = customer.Surname;
+            customerRequest.Age = customer.Age;
             customerRequest.Email = customer.Email;
             return customerRequest;
         }
@@ -54,11 +56,13 @@ namespace cochesApi.Logic.Validations
 
             customer.Name = customerRequest.Name;
             customer.Surname = customerRequest.Surname;
+            customer.Age = customerRequest.Age;
             customer.Email = customerRequest.Email;
 
             CustomerRequest customerResponse = new CustomerRequest();
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
+            customerResponse.Age = customer.Age;
             customerResponse.Email = customer.Email;
 
             queriesDB.Update(customer);
@@ -73,12 +77,14 @@ namespace cochesApi.Logic.Validations
             Customer customer = new Customer();
             customer.Name = customerRequest.Name;
             customer.Surname = customerRequest.Surname;
+            customer.Age = customerRequest.Age;
             customer.Email = customerRequest.Email;
             customer.Password = BCrypt.Net.BCrypt.HashPassword(customerRequest.Password);
 
             CustomerRequest customerResponse = new CustomerRequest();
             customerResponse.Name = customerRequest.Name;
             customerResponse.Surname = customerRequest.Surname;
+            customerResponse.Age = customerRequest.Age;
             customerResponse.Email = customerRequest.Email;
 
             queriesCustomer.AddCustomer(customer);
@@ -95,6 +101,7 @@ namespace cochesApi.Logic.Validations
             CustomerRequest customerResponse = new CustomerRequest();
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
+            customerResponse.Age = customer.Age;
             customerResponse.Email = customer.Email;
 
             queriesCustomer.RemoveCustomer(customer);
