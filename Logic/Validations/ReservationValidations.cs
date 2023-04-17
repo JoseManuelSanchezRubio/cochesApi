@@ -116,12 +116,6 @@ namespace cochesApi.Logic.Validations
 
             if (customer == null) return Problem("Customer does not exist");
 
-            /* if(queriesPlanning.GetAvailableCarsByBranchByTypeCarByDate(reservationRequest.BranchId, reservationRequest.TypeCarId, reservationRequest.InitialDate) == 0){
-                rrv.Status = false;
-                rrv.Message = "Customer does not exist";
-                return rrv;
-            } */
-
             var plannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(reservationRequest.BranchId, reservationRequest.TypeCarId, reservationRequest.InitialDate, reservationRequest.FinalDate);
 
             foreach (Planning planning in plannings)
@@ -175,7 +169,6 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservationRequest.CustomerId;
             reservationResponse.BranchId = reservationRequest.BranchId;
 
-            /* ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse); */
 
 
             return reservationResponse;
@@ -203,11 +196,6 @@ namespace cochesApi.Logic.Validations
             if (customer == null) return Problem("Customer does not exist");
 
             if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0) return Problem("No cars available");
-
-
-            
-
-
 
 
             var cars = (from c in typeCar.Cars
@@ -267,8 +255,6 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservationRequestDifferentBranch.CustomerId;
             reservationResponse.BranchId = reservationRequestDifferentBranch.PickUpBranchId;
 
-            /* ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse); */
-
 
             return reservationResponse;
         }
@@ -294,7 +280,7 @@ namespace cochesApi.Logic.Validations
             var reservations = queriesReservation.GetReservations();
             var branch = queriesBranch.GetBranch(id);
 
-            if (branch == null) return null!;
+            if (branch == null) return  Problem("Branch does not exist");
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
             foreach (Reservation reservation in reservations)
@@ -321,7 +307,7 @@ namespace cochesApi.Logic.Validations
             var reservations = queriesReservation.GetReservations();
             var car = queriesCar.GetCar(id);
 
-            if (car == null) return null!;
+            if (car == null) return Problem("Car does not exist");
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
             foreach (Reservation reservation in reservations)
@@ -348,7 +334,7 @@ namespace cochesApi.Logic.Validations
             var reservations = queriesReservation.GetReservations();
             var customer = queriesCustomer.GetCustomer(id);
 
-            if (customer == null) return null!;
+            if (customer == null) return Problem("Customer does not exist");
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
             foreach (Reservation reservation in reservations)

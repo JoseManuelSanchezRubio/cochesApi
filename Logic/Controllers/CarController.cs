@@ -77,8 +77,6 @@ namespace cochesApi.Controllers
         [HttpGet("availability/{branchId}/{initialDate}/{finalDate}")]
         public ActionResult<List<CarResponse>> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
         {
-            if(carValidation.GetAvailableCarsByBranchAndDate(branchId, initialDate, finalDate)==null) return Problem("Wrong data");
-            
             return carValidation.GetAvailableCarsByBranchAndDate(branchId, initialDate, finalDate);
         }
     }

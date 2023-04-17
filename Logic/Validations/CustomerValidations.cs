@@ -102,8 +102,6 @@ namespace cochesApi.Logic.Validations
             customerResponse.Surname = customerRequest.Surname;
             customerResponse.Email = customerRequest.Email;
 
-            /* CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse); */
-
             queriesCustomer.AddCustomer(customer);
             queries.SaveChangesAsync();
 

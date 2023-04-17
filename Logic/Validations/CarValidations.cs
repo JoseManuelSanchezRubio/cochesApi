@@ -158,8 +158,6 @@ namespace cochesApi.Logic.Validations
             car.isGasoline = carRequest.isGasoline;
 
 
-            //CarResponseValidation carResponseValidation = new CarResponseValidation(carResponse);
-
             if (branch == null) return Problem("Branch does not exist");
 
             if (typeCar == null) return Problem("TypeCar does not exist");
@@ -210,8 +208,8 @@ namespace cochesApi.Logic.Validations
         }
         public ActionResult<int> GetNumberOfAvailableCarsByBranchAndDate(int branchId, int typeCarId, DateTime date)
         {
-            if (queriesBranch.GetBranch(branchId) == null) return -1;
-            if (queriesTypeCar.GetTypeCar(typeCarId) == null) return -2;
+            if (queriesBranch.GetBranch(branchId) == null) return Problem("Branch does not exist");
+            if (queriesTypeCar.GetTypeCar(typeCarId) == null) return Problem("TypeCar does not exist");
 
             return queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(branchId, typeCarId, date);
         }
@@ -222,7 +220,7 @@ namespace cochesApi.Logic.Validations
             var branch = queriesBranch.GetBranch(id);
             var cars = queriesCar.GetCars();
 
-            if (branch == null) return null!;
+            if (branch == null) return Problem("Branch does not exist");
 
             List<CarResponse> carsList = new List<CarResponse>();
             foreach (Car car in cars)
@@ -248,7 +246,7 @@ namespace cochesApi.Logic.Validations
             var typeCar = queriesTypeCar.GetTypeCar(id);
             var cars = queriesCar.GetCars();
 
-            if (typeCar == null) return null!;
+            if (typeCar == null) return Problem("TypeCar does not exist");
 
             List<CarResponse> carsList = new List<CarResponse>();
             foreach (Car car in cars)
@@ -272,9 +270,9 @@ namespace cochesApi.Logic.Validations
         {
             var branch = queriesBranch.GetBranch(branchId);
 
-            if (branch == null) return null!;
+            if (branch == null) return Problem("Branch does not exist");
 
-            if (initialDate > finalDate) return null!;
+            if (initialDate > finalDate) return Problem("Initial date must be before final date");
 
             var cars = queriesCar.GetAvailableCarsByBranch(branchId);
 

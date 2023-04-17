@@ -117,7 +117,6 @@ namespace cochesApi.Logic.Validations
             branchResponse.Name = branchRequest.Name;
             branchResponse.Location = branchRequest.Location;
 
-            //BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchResponse);
 
             return branchResponse;
         }

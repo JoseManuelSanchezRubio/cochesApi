@@ -84,8 +84,6 @@ namespace cochesApi.Logic.Validations
 
             TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
 
-            /* TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse); */
-
             queriesTypeCar.AddTypeCar(typeCar);
             queries.SaveChangesAsync();
 

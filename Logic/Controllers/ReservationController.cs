@@ -36,9 +36,7 @@ namespace cochesApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<ReservationResponse> GetReservation(int id)
         {
-            var reservation = reservationValidation.GetReservation(id);
-            if (reservation == null) return Problem("Reservation does not exist");
-            return reservation;
+            return reservationValidation.GetReservation(id);
         }
 
         // PUT: api/Reservation/5
