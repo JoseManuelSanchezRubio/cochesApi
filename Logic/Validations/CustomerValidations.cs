@@ -3,9 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Models;
-using cochesApi.DataAccess.Queries;
-using DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +14,6 @@ namespace cochesApi.Logic.Validations
         private ICustomerQueries queriesCustomer;
         private readonly IConfiguration _configuration;
 
-
         public CustomerValidation(IConfiguration configuration, IDBQueries _queries, ICustomerQueries _queriesCustomer)
         {
             _configuration = configuration;
@@ -26,7 +22,6 @@ namespace cochesApi.Logic.Validations
         }
         public ActionResult<IEnumerable<CustomerRequest>> GetCustomers()
         {
-
             var customers = queriesCustomer.GetCustomers();
             List<CustomerRequest> customersRequest = new List<CustomerRequest>();
             foreach (Customer customer in customers)
@@ -51,7 +46,6 @@ namespace cochesApi.Logic.Validations
             customerRequest.Email = customer.Email;
             return customerRequest;
         }
-
         public ActionResult<CustomerRequest> PutCustomer(int id, CustomerRequest customerRequest)
         {
             var customer = queriesCustomer.GetCustomer(id);
@@ -126,12 +120,12 @@ namespace cochesApi.Logic.Validations
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject!),
-            new Claim(JwtRegisteredClaimNames.Aud, jwt.Audience!),
-            new Claim(JwtRegisteredClaimNames.Iss, jwt.Issuer!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, "customer")
-        };
+                new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject!),
+                new Claim(JwtRegisteredClaimNames.Aud, jwt.Audience!),
+                new Claim(JwtRegisteredClaimNames.Iss, jwt.Issuer!),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, "customer")
+            };
 
             var token = new JwtSecurityToken(
                 issuer: jwt.Issuer,

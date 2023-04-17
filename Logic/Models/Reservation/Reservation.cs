@@ -1,7 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace cochesApi.Logic.Models;
-
 public class Reservation
 {
     public int Id { get; set; }
@@ -12,11 +9,9 @@ public class Reservation
     public int CustomerId { get; set; }
     public int BranchId { get; set; }
 
-    
     public virtual Customer? Customer { get; set; }
     public virtual Car? Car { get; set; }
     public virtual Branch? Branch { get; set; }
-
 }
 
 

@@ -1,10 +1,8 @@
 using cochesApi.Logic.Models;
-using cochesApi.Logic.Validations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Interfaces
 {
-
     public interface ICustomer
     {
         ActionResult<IEnumerable<CustomerRequest>> GetCustomers();
@@ -14,5 +12,4 @@ namespace cochesApi.Logic.Interfaces
         ActionResult<CustomerRequest> DeleteCustomer(int id);
         string GetToken(CustomerLoginRequest customerLoginRequest);
     }
-    
 }

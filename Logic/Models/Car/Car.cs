@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace cochesApi.Logic.Models;
 
 public class Car
@@ -11,10 +9,8 @@ public class Car
     public bool isGasoline { get; set; }
     public int BranchId { get; set; }
     public int TypeCarId { get; set; }
+    
     public virtual ICollection<Reservation>? Reservations { get; set; } = new List<Reservation>();
     public virtual Branch? Branch { get; set; }
     public virtual TypeCar? TypeCar { get; set; }
-
-    
-
 }

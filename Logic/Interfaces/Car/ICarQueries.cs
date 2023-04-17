@@ -1,11 +1,7 @@
 using cochesApi.Logic.Models;
-using cochesApi.Logic.Validations;
-using Microsoft.AspNetCore.Mvc;
-
 
 namespace cochesApi.Logic.Interfaces
 {
-
     public interface ICarQueries
     {
         List<Car> GetCars();
@@ -14,5 +10,4 @@ namespace cochesApi.Logic.Interfaces
         void AddCar(Car car);
         List<Car> GetAvailableCarsByBranch(int id);
     }
-    
 }

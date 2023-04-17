@@ -1,8 +1,5 @@
 using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Models;
-using cochesApi.DataAccess.Queries;
-using DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
@@ -21,7 +18,6 @@ namespace cochesApi.Logic.Validations
             queriesTypeCar = _queriesTypeCar;
             queriesDB = _queries;
         }
-
         public ActionResult<IEnumerable<BranchRequest>> GetBranches()
         {
             var branches = queriesBranch.GetBranches();
@@ -45,7 +41,6 @@ namespace cochesApi.Logic.Validations
 
             return branchRequest;
         }
-
         public ActionResult<BranchRequest> PutBranch(int id, BranchRequest branchRequest)
         {
             var branch = queriesBranch.GetBranch(id);
@@ -56,7 +51,7 @@ namespace cochesApi.Logic.Validations
             branch.Location = branchRequest.Location;
 
             BranchRequest branchResponse = new BranchRequest();
-            branchResponse.Name=branchRequest.Name;
+            branchResponse.Name = branchRequest.Name;
             branchResponse.Location = branchRequest.Location;
 
             queriesDB.Update(branch);
@@ -75,10 +70,8 @@ namespace cochesApi.Logic.Validations
 
             queriesBranch.AddBranch(branch);
             queriesDB.SaveChangesAsync();
-            
 
             var branchh = queriesBranch.GetBranch(branch.Id); //esto es para poder coger el id del branch
-
 
             for (int i = 0; i < 365; i++)
             {
@@ -102,13 +95,12 @@ namespace cochesApi.Logic.Validations
             branchResponse.Name = branchRequest.Name;
             branchResponse.Location = branchRequest.Location;
 
-
             return branchResponse;
         }
         public ActionResult<BranchRequest> DeleteBranch(int id)
         {
             var branch = queriesBranch.GetBranch(id);
-            
+
             if (branch == null) return NotFound("Branch does not exist");
 
             BranchRequest branchResponse = new BranchRequest();

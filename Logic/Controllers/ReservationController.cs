@@ -20,8 +20,9 @@ namespace cochesApi.Controllers
     {
 
         private IReservation reservationValidation;
-        public ReservationController(IReservation _reservation){
-            reservationValidation=_reservation;
+        public ReservationController(IReservation _reservation)
+        {
+            reservationValidation = _reservation;
         }
 
 
@@ -57,7 +58,8 @@ namespace cochesApi.Controllers
         [HttpPost("reservationOnDifferentBranch")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "customer")]
-        public ActionResult<ReservationResponse> PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch){
+        public ActionResult<ReservationResponse> PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch)
+        {
             return reservationValidation.PostReservationOnDifferentBranch(reservationRequestDifferentBranch);
         }
         // DELETE: api/Reservation/5
@@ -97,7 +99,5 @@ namespace cochesApi.Controllers
         {
             return reservationValidation.GetReservationsByDate(date);
         }
-
-
     }
 }

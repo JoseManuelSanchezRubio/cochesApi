@@ -1,5 +1,4 @@
 using cochesApi.Logic.Models;
-using cochesApi.Logic.Validations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Interfaces
@@ -15,5 +14,4 @@ namespace cochesApi.Logic.Interfaces
         ActionResult<List<CarResponse>> GetCarsByTypeCar(int id);
         ActionResult<List<CarResponse>> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate);
     }
-    
 }

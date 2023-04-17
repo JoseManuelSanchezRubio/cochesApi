@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace cochesApi.Logic.Models;
 
 public class CarRequest
@@ -10,8 +8,4 @@ public class CarRequest
     public int TypeCarId { get; set; }
     public bool isAutomatic { get; set; }
     public bool isGasoline { get; set; }
-
-
-    
-
 }

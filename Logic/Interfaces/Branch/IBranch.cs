@@ -1,11 +1,9 @@
 using cochesApi.Logic.Models;
-using cochesApi.Logic.Validations;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace cochesApi.Logic.Interfaces
 {
-
     public interface IBranch
     {
         ActionResult<IEnumerable<BranchRequest>> GetBranches();
@@ -14,5 +12,4 @@ namespace cochesApi.Logic.Interfaces
         ActionResult<BranchRequest> PostBranch(BranchRequest branchRequest);
         ActionResult<BranchRequest> DeleteBranch(int id);
     }
-    
 }

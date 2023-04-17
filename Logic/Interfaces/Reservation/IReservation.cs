@@ -1,10 +1,8 @@
 using cochesApi.Logic.Models;
-using cochesApi.Logic.Validations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Interfaces
 {
-
     public interface IReservation
     {
         ActionResult<IEnumerable<ReservationResponse>> GetReservations();
@@ -18,5 +16,4 @@ namespace cochesApi.Logic.Interfaces
         ActionResult<List<ReservationResponse>> GetReservationsByCustomer(int id);
         ActionResult<List<ReservationResponse>> GetReservationsByDate(DateTime date);
     }
-    
 }

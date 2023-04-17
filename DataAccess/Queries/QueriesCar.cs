@@ -1,6 +1,5 @@
 using cochesApi.Logic.Models;
 using DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
 using cochesApi.Logic.Interfaces;
 
 namespace cochesApi.DataAccess.Queries
@@ -13,25 +12,25 @@ namespace cochesApi.DataAccess.Queries
             _context = context;
         }
 
-        public List<Car> GetCars(){
+        public List<Car> GetCars()
+        {
             return _context.Cars.ToList();
         }
-        public Car GetCar(int id){
+        public Car GetCar(int id)
+        {
             return _context.Cars.Find(id)!;
         }
-        public void RemoveCar(Car car){
+        public void RemoveCar(Car car)
+        {
             _context.Cars.Remove(car);
         }
-        public void AddCar(Car car){
+        public void AddCar(Car car)
+        {
             _context.Cars.Add(car);
         }
-        public List<Car> GetAvailableCarsByBranch(int id){
+        public List<Car> GetAvailableCarsByBranch(int id)
+        {
             return _context.Cars.Where(c => c.BranchId == id).ToList();
         }
-        
-
-
-
-
     }
 }

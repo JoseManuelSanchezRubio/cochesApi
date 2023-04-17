@@ -1,7 +1,6 @@
 using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Models;
 using DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace cochesApi.DataAccess.Queries
 {
@@ -13,21 +12,21 @@ namespace cochesApi.DataAccess.Queries
             _context = context;
         }
 
-
-        public List<Branch> GetBranches(){
+        public List<Branch> GetBranches()
+        {
             return _context.Branches.ToList();
         }
-        public Branch GetBranch(int id){
+        public Branch GetBranch(int id)
+        {
             return _context.Branches.Find(id)!;
         }
-        public void RemoveBranch(Branch branch){
+        public void RemoveBranch(Branch branch)
+        {
             _context.Branches.Remove(branch);
         }
-        public void AddBranch(Branch branch){
+        public void AddBranch(Branch branch)
+        {
             _context.Branches.Add(branch);
         }
-
-
-
     }
 }

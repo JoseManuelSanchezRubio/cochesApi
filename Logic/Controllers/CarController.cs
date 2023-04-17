@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DataAccess.Data;
 using cochesApi.Logic.Models;
-using cochesApi.Logic.Validations;
 using cochesApi.Logic.Interfaces;
 
 namespace cochesApi.Controllers
@@ -22,14 +14,12 @@ namespace cochesApi.Controllers
             carValidation = _car;
         }
 
-        // GET: api/Car
         [HttpGet]
         public ActionResult<IEnumerable<CarResponse>> GetCars()
         {
             return carValidation.GetCars();
         }
 
-        // GET: api/Car/5
         [HttpGet("{id}")]
         public ActionResult<CarResponse> GetCar(int id)
         {
@@ -42,6 +32,7 @@ namespace cochesApi.Controllers
 
             return carValidation.GetCarsByBranch(id);
         }
+
         [HttpGet("typeCar/{id}")]
         public ActionResult<List<CarResponse>> GetCarsByTypeCar(int id)
         {
@@ -50,23 +41,18 @@ namespace cochesApi.Controllers
             return carValidation.GetCarsByTypeCar(id);
         }
 
-        // PUT: api/Car/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public ActionResult<CarResponse> PutCar(int id, CarRequest carRequest)
         {
             return carValidation.PutCar(id, carRequest);
         }
 
-        // POST: api/Car
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public ActionResult<CarResponse> PostCar(CarRequest carRequest)
         {
             return carValidation.PostCar(carRequest);
         }
 
-        // DELETE: api/Car/5
         [HttpDelete("{id}")]
         public ActionResult<CarResponse> DeleteCar(int id)
         {

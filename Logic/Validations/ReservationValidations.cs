@@ -1,8 +1,5 @@
 using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Models;
-using cochesApi.DataAccess.Queries;
-using DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
@@ -16,7 +13,6 @@ namespace cochesApi.Logic.Validations
         private ICarQueries queriesCar;
         private IReservationQueries queriesReservation;
         private ICustomerQueries queriesCustomer;
-
         public ReservationValidation(IBranchQueries _queriesBranch, IPlanningQueries _queriesPlanning, ITypeCarQueries _queriesTypeCar, IDBQueries _queries, ICarQueries _queriesCar, IReservationQueries _queriesReservation, ICustomerQueries _queriesCustomer)
         {
             queriesBranch = _queriesBranch;
@@ -61,7 +57,6 @@ namespace cochesApi.Logic.Validations
 
             return reservationResponse;
         }
-
         public ActionResult<ReservationResponse> PutReservation(int id, ReservationRequest reservationRequest)
         {
             var reservation = queriesReservation.GetReservation(id);
@@ -79,11 +74,8 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservation.CustomerId;
             reservationResponse.InitialDate = reservation.InitialDate;
             reservationResponse.FinalDate = reservation.FinalDate;
-            
-
 
             return reservationResponse;
-
         }
 
         public ActionResult<ReservationResponse> PostReservation(ReservationRequest reservationRequest)
@@ -108,7 +100,6 @@ namespace cochesApi.Logic.Validations
                 if (planning.AvailableCars == 0) return Problem("No cars available");
             }
 
-
             var cars = (from c in typeCar.Cars
                         where c.BranchId == reservationRequest.BranchId
                         select c);
@@ -122,7 +113,6 @@ namespace cochesApi.Logic.Validations
                     carToBook = car;
                 }
             }
-
 
             Reservation reservation = new Reservation();
             reservation.InitialDate = reservationRequest.InitialDate;
@@ -154,15 +144,10 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservationRequest.CustomerId;
             reservationResponse.BranchId = reservationRequest.BranchId;
 
-
-
             return reservationResponse;
-
         }
-
         public ActionResult<ReservationResponse> PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch)
         {
-
             var typeCar = queriesTypeCar.GetTypeCar(reservationRequestDifferentBranch.TypeCarId);
             var pickUpBranch = queriesBranch.GetBranch(reservationRequestDifferentBranch.PickUpBranchId);
             var returnBranch = queriesBranch.GetBranch(reservationRequestDifferentBranch.ReturnBranchId);
@@ -180,7 +165,6 @@ namespace cochesApi.Logic.Validations
 
             if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0) return Problem("No cars available");
 
-
             var cars = (from c in typeCar.Cars
                         where c.BranchId == reservationRequestDifferentBranch.PickUpBranchId
                         select c);
@@ -194,7 +178,6 @@ namespace cochesApi.Logic.Validations
                     carToBook = car;
                 }
             }
-
 
             Reservation reservation = new Reservation();
             reservation.InitialDate = reservationRequestDifferentBranch.InitialDate;
@@ -213,7 +196,7 @@ namespace cochesApi.Logic.Validations
             queriesReservation.AddReservation(reservation);
 
             pickUpBranch.Cars.Remove(carToBook);
-            returnBranch.Cars.Add(carToBook);       
+            returnBranch.Cars.Add(carToBook);
 
             var olderPlanningsPickUpBranch = queriesPlanning.GetOlderPlanningsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate.AddDays(-1));
 
@@ -238,7 +221,6 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservationRequestDifferentBranch.CustomerId;
             reservationResponse.BranchId = reservationRequestDifferentBranch.PickUpBranchId;
 
-
             return reservationResponse;
         }
         public ActionResult<ReservationResponse> DeleteReservation(int id)
@@ -255,7 +237,6 @@ namespace cochesApi.Logic.Validations
             reservationResponse.FinalDate = reservation.FinalDate;
             reservationResponse.Id = reservation.Id;
 
-
             queriesReservation.RemoveReservation(reservation);
             queriesDB.SaveChangesAsync();
 
@@ -263,11 +244,10 @@ namespace cochesApi.Logic.Validations
         }
         public ActionResult<List<ReservationResponse>> GetReservationsByBranch(int id)
         {
-
             var reservations = queriesReservation.GetReservations();
             var branch = queriesBranch.GetBranch(id);
 
-            if (branch == null) return  Problem("Branch does not exist");
+            if (branch == null) return Problem("Branch does not exist");
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
             foreach (Reservation reservation in reservations)
@@ -287,10 +267,8 @@ namespace cochesApi.Logic.Validations
             }
             return reservationsList;
         }
-
         public ActionResult<List<ReservationResponse>> GetReservationsByCar(int id)
         {
-
             var reservations = queriesReservation.GetReservations();
             var car = queriesCar.GetCar(id);
 
@@ -314,10 +292,8 @@ namespace cochesApi.Logic.Validations
             }
             return reservationsList;
         }
-
         public ActionResult<List<ReservationResponse>> GetReservationsByCustomer(int id)
         {
-
             var reservations = queriesReservation.GetReservations();
             var customer = queriesCustomer.GetCustomer(id);
 
@@ -343,7 +319,6 @@ namespace cochesApi.Logic.Validations
         }
         public ActionResult<List<ReservationResponse>> GetReservationsByDate(DateTime date)
         {
-
             var reservations = queriesReservation.GetReservations();
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();

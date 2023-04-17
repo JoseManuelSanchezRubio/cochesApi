@@ -1,19 +1,13 @@
 using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Models;
-using cochesApi.DataAccess.Queries;
-using DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
     public class TypeCarValidation : ControllerBase, ITypeCar
     {
-
         private IDBQueries queriesDB;
         private ITypeCarQueries queriesTypeCar;
-
-
         public TypeCarValidation(IBranchQueries _queriesBranch, IPlanningQueries _queriesPlanning, ITypeCarQueries _queriesTypeCar, IDBQueries _queries, ICarQueries _queriesCar, IReservationQueries _queriesReservation, ICustomerQueries _queriesCustomer)
         {
             queriesTypeCar = _queriesTypeCar;
@@ -57,7 +51,6 @@ namespace cochesApi.Logic.Validations
             queriesDB.SaveChangesAsync();
 
             return typeCarResponse;
-
         }
         public ActionResult<TypeCarRequest> PostTypeCar(TypeCarRequest typeCarRequest)
         {

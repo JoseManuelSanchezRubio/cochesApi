@@ -1,7 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace cochesApi.Logic.Models;
-
 public class Planning
 {
     public int Id { get; set; }

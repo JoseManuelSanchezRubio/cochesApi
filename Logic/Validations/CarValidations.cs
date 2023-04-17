@@ -1,8 +1,5 @@
 using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Models;
-using cochesApi.DataAccess.Queries;
-using DataAccess.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
@@ -15,7 +12,6 @@ namespace cochesApi.Logic.Validations
         private ITypeCarQueries queriesTypeCar;
         private ICarQueries queriesCar;
 
-
         public CarValidation(IBranchQueries _queriesBranch, IPlanningQueries _queriesPlanning, ITypeCarQueries _queriesTypeCar, IDBQueries _queries, ICarQueries _queriesCar)
         {
             queriesBranch = _queriesBranch;
@@ -24,8 +20,6 @@ namespace cochesApi.Logic.Validations
             queriesDB = _queries;
             queriesCar = _queriesCar;
         }
-
-
         public ActionResult<IEnumerable<CarResponse>> GetCars()
         {
             var cars = queriesCar.GetCars();
@@ -48,7 +42,7 @@ namespace cochesApi.Logic.Validations
         {
             var car = queriesCar.GetCar(id);
 
-            if(car==null) return Problem("Car does not exist");
+            if (car == null) return Problem("Car does not exist");
 
             CarResponse carResponse = new CarResponse();
             carResponse.Id = car.Id;
@@ -60,7 +54,6 @@ namespace cochesApi.Logic.Validations
             carResponse.TypeCarId = car.TypeCarId;
             return carResponse;
         }
-
         public ActionResult<CarResponse> PutCar(int id, CarRequest carRequest)
         {
             var car = queriesCar.GetCar(id);
@@ -74,7 +67,6 @@ namespace cochesApi.Logic.Validations
             if (typeCar == null) return Problem("Type does not exist");
 
             if (car == null) return Problem("Car does not exist");
-
 
             car.Model = carRequest.Model;
             car.Brand = carRequest.Brand;
@@ -94,8 +86,6 @@ namespace cochesApi.Logic.Validations
             carResponse.BranchId = car.BranchId;
             carResponse.TypeCarId = car.TypeCarId;
 
-            
-
             var oldPlannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(firstBranchId, firstTypeCarId, DateTime.Now.Date, queriesPlanning.GetPlanning(queriesPlanning.GetPlannings().Count).Day.Date);
             foreach (Planning planning in oldPlannings)
             {
@@ -107,13 +97,11 @@ namespace cochesApi.Logic.Validations
                 planning.AvailableCars++;
             }
 
-
             queriesDB.Update(car);
 
             queriesDB.SaveChangesAsync();
 
             return carResponse;
-
         }
         public ActionResult<CarResponse> PostCar(CarRequest carRequest)
         {
@@ -138,11 +126,9 @@ namespace cochesApi.Logic.Validations
             car.isAutomatic = carRequest.isAutomatic;
             car.isGasoline = carRequest.isGasoline;
 
-
             if (branch == null) return Problem("Branch does not exist");
 
             if (typeCar == null) return Problem("TypeCar does not exist");
-
 
             var plannings = queriesPlanning.GetPlannings(); ;
             foreach (Planning planning in plannings)
@@ -164,7 +150,6 @@ namespace cochesApi.Logic.Validations
             var car = queriesCar.GetCar(id);
 
             if (car == null) return Problem("Car does not exist");
-
 
             var plannings = queriesPlanning.GetPlannings(); ;
 
@@ -196,7 +181,6 @@ namespace cochesApi.Logic.Validations
 
             return queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(branchId, typeCarId, date);
         }
-
         public ActionResult<List<CarResponse>> GetCarsByBranch(int id)
         {
 
@@ -225,7 +209,6 @@ namespace cochesApi.Logic.Validations
         }
         public ActionResult<List<CarResponse>> GetCarsByTypeCar(int id)
         {
-
             var typeCar = queriesTypeCar.GetTypeCar(id);
             var cars = queriesCar.GetCars();
 
@@ -277,7 +260,6 @@ namespace cochesApi.Logic.Validations
             }
 
             return availableCars;
-
         }
         private bool isCarAvailable(Car car, DateTime? initialDate, DateTime? finalDate)
         {

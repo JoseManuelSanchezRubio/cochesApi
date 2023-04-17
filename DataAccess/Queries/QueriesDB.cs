@@ -1,4 +1,3 @@
-using cochesApi.Logic.Models;
 using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using cochesApi.Logic.Interfaces;
@@ -12,37 +11,13 @@ namespace cochesApi.DataAccess.Queries
         {
             _context = context;
         }
-        public async Task SaveChangesAsync(){
+        public async Task SaveChangesAsync()
+        {
             await _context.SaveChangesAsync();
         }
-        public void Update(Object obj){
+        public void Update(Object obj)
+        {
             _context.Entry(obj).State = EntityState.Modified;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

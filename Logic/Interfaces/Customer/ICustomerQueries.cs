@@ -1,7 +1,4 @@
 using cochesApi.Logic.Models;
-using cochesApi.Logic.Validations;
-using Microsoft.AspNetCore.Mvc;
-
 
 namespace cochesApi.Logic.Interfaces
 {
@@ -14,5 +11,5 @@ namespace cochesApi.Logic.Interfaces
         void AddCustomer(Customer customer);
         Customer GetCustomerByEmail(string email);
     }
-    
+
 }
