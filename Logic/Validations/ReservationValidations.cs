@@ -284,7 +284,10 @@ namespace cochesApi.Logic.Validations
             pickUpBranch.Reservations?.Add(reservation);
             carToBook.Reservations?.Add(reservation);
 
-            queriesReservation.AddReservation(reservation);           
+            queriesReservation.AddReservation(reservation);
+
+            pickUpBranch.Cars.Remove(carToBook);
+            returnBranch.Cars.Add(carToBook);       
 
             var olderPlanningsPickUpBranch = queriesPlanning.GetOlderPlanningsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate.AddDays(-1));
 

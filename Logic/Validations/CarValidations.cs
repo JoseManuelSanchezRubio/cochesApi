@@ -28,7 +28,7 @@ namespace cochesApi.Logic.Validations
         private IPlanningQueries queriesPlanning;
         private ITypeCarQueries queriesTypeCar;
         private ICarQueries queriesCar;
-        
+
 
         public CarValidation(IBranchQueries _queriesBranch, IPlanningQueries _queriesPlanning, ITypeCarQueries _queriesTypeCar, IDBQueries _queries, ICarQueries _queriesCar)
         {
@@ -51,6 +51,8 @@ namespace cochesApi.Logic.Validations
                 carResponse.BranchId = car.BranchId;
                 carResponse.Brand = car.Brand;
                 carResponse.Model = car.Model;
+                carResponse.isAutomatic = car.isAutomatic;
+                carResponse.isGasoline = car.isGasoline;
                 carResponse.TypeCarId = car.TypeCarId;
                 carsResponse.Add(carResponse);
             }
@@ -65,13 +67,17 @@ namespace cochesApi.Logic.Validations
             carResponse.BranchId = car.BranchId;
             carResponse.Brand = car.Brand;
             carResponse.Model = car.Model;
+            carResponse.isAutomatic = car.isAutomatic;
+            carResponse.isGasoline = car.isGasoline;
             carResponse.TypeCarId = car.TypeCarId;
             return carResponse;
         }
 
         public CarResponseValidation PutCar(int id, CarRequest carRequest)
         {
-            var car = queriesCar.GetCar(id); // por aqui
+            var car = queriesCar.GetCar(id);
+            var firstBranchId = car.BranchId;
+            var firstTypeCarId = car.TypeCarId;
             var branch = queriesBranch.GetBranch(carRequest.BranchId);
             var typeCar = queriesTypeCar.GetTypeCar(carRequest.TypeCarId);
 
@@ -98,12 +104,24 @@ namespace cochesApi.Logic.Validations
 
             car.Model = carRequest.Model;
             car.Brand = carRequest.Brand;
+            car.isAutomatic = carRequest.isAutomatic;
+            car.isGasoline = carRequest.isGasoline;
             car.BranchId = carRequest.BranchId;
             car.TypeCarId = carRequest.TypeCarId;
             car.Branch = branch;
+            car.TypeCar = typeCar;
 
-            if (!branch.Cars.Contains(car)) branch.Cars.Add(car); //Falta hacer cambios en planning si cambia de sucursal y/o tipo
-            if (!typeCar.Cars.Contains(car)) typeCar.Cars.Add(car);
+            var oldPlannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(firstBranchId, firstTypeCarId, DateTime.Now.Date, queriesPlanning.GetPlanning(queriesPlanning.GetPlannings().Count).Day.Date);
+            foreach (Planning planning in oldPlannings)
+            {
+                planning.AvailableCars--;
+            }
+            var newPlannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(carRequest.BranchId, carRequest.TypeCarId, DateTime.Now, queriesPlanning.GetPlanning(queriesPlanning.GetPlannings().Count).Day);
+            foreach (Planning planning in newPlannings)
+            {
+                planning.AvailableCars++;
+            }
+
 
             queries.Update(car);
 
@@ -116,10 +134,12 @@ namespace cochesApi.Logic.Validations
         {
             var branch = queriesBranch.GetBranch(carRequest.BranchId);
             var typeCar = queriesTypeCar.GetTypeCar(carRequest.TypeCarId);
-            
+
             Car car = new Car();
             car.Model = carRequest.Model;
             car.Brand = carRequest.Brand;
+            car.isAutomatic = carRequest.isAutomatic;
+            car.isGasoline = carRequest.isGasoline;
             car.BranchId = carRequest.BranchId;
             car.TypeCarId = carRequest.TypeCarId;
             car.Branch = branch;
@@ -148,7 +168,7 @@ namespace cochesApi.Logic.Validations
                 return carResponseValidation;
             }
 
-            var plannings = queriesPlanning.GetPlannings();;
+            var plannings = queriesPlanning.GetPlannings(); ;
             foreach (Planning planning in plannings)
             {
                 if (planning.BranchId == carRequest.BranchId && planning.TypeCarId == carRequest.TypeCarId)
@@ -160,7 +180,7 @@ namespace cochesApi.Logic.Validations
             queriesCar.AddCar(car);
             queries.SaveChangesAsync();
 
-            
+
             return carResponseValidation;
         }
         public CarResponseValidation DeleteCar(int id)
@@ -176,7 +196,7 @@ namespace cochesApi.Logic.Validations
                 return carResponseValidation;
             }
 
-            var plannings = queriesPlanning.GetPlannings();;
+            var plannings = queriesPlanning.GetPlannings(); ;
 
             foreach (Planning planning in plannings)
             {
@@ -191,19 +211,21 @@ namespace cochesApi.Logic.Validations
 
             return carResponseValidation;
         }
-        public ActionResult<int> GetNumberOfAvailableCarsByBranchAndDate(int branchId, int typeCarId, DateTime date){
-            if(queriesBranch.GetBranch(branchId)==null) return -1;
-            if(queriesTypeCar.GetTypeCar(typeCarId)==null) return -2;
+        public ActionResult<int> GetNumberOfAvailableCarsByBranchAndDate(int branchId, int typeCarId, DateTime date)
+        {
+            if (queriesBranch.GetBranch(branchId) == null) return -1;
+            if (queriesTypeCar.GetTypeCar(typeCarId) == null) return -2;
 
             return queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(branchId, typeCarId, date);
         }
 
-        public ActionResult<List<CarResponse>> GetCarsByBranch(int id){
+        public ActionResult<List<CarResponse>> GetCarsByBranch(int id)
+        {
 
             var branch = queriesBranch.GetBranch(id);
             var cars = queriesCar.GetCars();
 
-            if(branch == null) return null!;
+            if (branch == null) return null!;
 
             List<CarResponse> carsList = new List<CarResponse>();
             foreach (Car car in cars)
@@ -214,6 +236,8 @@ namespace cochesApi.Logic.Validations
                     carResponse.Id = car.Id;
                     carResponse.Brand = car.Brand;
                     carResponse.Model = car.Model;
+                    carResponse.isAutomatic = car.isAutomatic;
+                    carResponse.isGasoline = car.isGasoline;
                     carResponse.BranchId = car.BranchId;
                     carResponse.TypeCarId = car.TypeCarId;
                     carsList.Add(carResponse);
@@ -221,12 +245,13 @@ namespace cochesApi.Logic.Validations
             }
             return carsList;
         }
-        public ActionResult<List<CarResponse>> GetCarsByTypeCar(int id){
+        public ActionResult<List<CarResponse>> GetCarsByTypeCar(int id)
+        {
 
             var typeCar = queriesTypeCar.GetTypeCar(id);
             var cars = queriesCar.GetCars();
 
-            if(typeCar == null) return null!;
+            if (typeCar == null) return null!;
 
             List<CarResponse> carsList = new List<CarResponse>();
             foreach (Car car in cars)
@@ -237,6 +262,8 @@ namespace cochesApi.Logic.Validations
                     carResponse.Id = car.Id;
                     carResponse.Brand = car.Brand;
                     carResponse.Model = car.Model;
+                    carResponse.isAutomatic = car.isAutomatic;
+                    carResponse.isGasoline = car.isGasoline;
                     carResponse.BranchId = car.BranchId;
                     carResponse.TypeCarId = car.TypeCarId;
                     carsList.Add(carResponse);
@@ -244,23 +271,27 @@ namespace cochesApi.Logic.Validations
             }
             return carsList;
         }
-        public ActionResult<List<CarResponse>> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate){
+        public ActionResult<List<CarResponse>> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
+        {
             var branch = queriesBranch.GetBranch(branchId);
 
-            if(branch == null) return null!;
+            if (branch == null) return null!;
 
-            if(initialDate > finalDate) return null!;
+            if (initialDate > finalDate) return null!;
 
             var cars = queriesCar.GetAvailableCarsByBranch(branchId);
 
             List<CarResponse> availableCars = new List<CarResponse>();
             foreach (Car car in cars)
             {
-                if(isCarAvailable(car, initialDate, finalDate)){
+                if (isCarAvailable(car, initialDate, finalDate))
+                {
                     CarResponse carResponse = new CarResponse();
                     carResponse.Id = car.Id;
                     carResponse.Brand = car.Brand;
                     carResponse.Model = car.Model;
+                    carResponse.isAutomatic = car.isAutomatic;
+                    carResponse.isGasoline = car.isGasoline;
                     carResponse.BranchId = car.BranchId;
                     carResponse.TypeCarId = car.TypeCarId;
                     availableCars.Add(carResponse);
