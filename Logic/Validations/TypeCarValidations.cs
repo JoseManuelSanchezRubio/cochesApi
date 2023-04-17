@@ -26,7 +26,7 @@ namespace cochesApi.Logic.Validations
 
         private IDBQueries queries;
         private ITypeCarQueries queriesTypeCar;
-        
+
 
         public TypeCarValidation(IBranchQueries _queriesBranch, IPlanningQueries _queriesPlanning, ITypeCarQueries _queriesTypeCar, IDBQueries _queries, ICarQueries _queriesCar, IReservationQueries _queriesReservation, ICustomerQueries _queriesCustomer)
         {
@@ -56,25 +56,21 @@ namespace cochesApi.Logic.Validations
             return typeCarRequest;
         }
 
-        public TypeCarResponseValidation PutTypeCar(int id, TypeCarRequest typeCarRequest)
+        public ActionResult<TypeCarRequest> PutTypeCar(int id, TypeCarRequest typeCarRequest)
         {
             var typeCar = queriesTypeCar.GetTypeCar(id);
-            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(null); // Cambiar en un futuro
 
-            if (typeCar == null)
-            {
-                typeCarResponseValidation.Status = false;
-                typeCarResponseValidation.Message = "TypeCar does not exist";
-                return typeCarResponseValidation;
-            }
+            if (typeCar == null) return Problem("TypeCar does not exist");
 
             typeCar.Name = typeCarRequest.Name;
+
+            TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
 
             queries.Update(typeCar);
 
             queries.SaveChangesAsync();
 
-            return typeCarResponseValidation;
+            return typeCarResponse;
 
         }
         public ActionResult<TypeCarRequest> PostTypeCar(TypeCarRequest typeCarRequest)
@@ -89,21 +85,18 @@ namespace cochesApi.Logic.Validations
 
             return typeCarResponse;
         }
-        public TypeCarResponseValidation DeleteTypeCar(int id)
+        public ActionResult<TypeCarRequest> DeleteTypeCar(int id)
         {
             var typeCar = queriesTypeCar.GetTypeCar(id);
-            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(null); // Cambiar en un futuro
-            if (typeCar == null)
-            {
-                typeCarResponseValidation.Status = false;
-                typeCarResponseValidation.Message = "TypeCar does not exist";
-                return typeCarResponseValidation;
-            }
+
+            if (typeCar == null) return Problem("TypeCar does not exist");
+
+            TypeCarRequest typeCarResponse = new TypeCarRequest(typeCar.Name!);
 
             queriesTypeCar.RemoveTypeCar(typeCar);
             queries.SaveChangesAsync();
 
-            return typeCarResponseValidation;
+            return typeCarResponse;
         }
     }
 }

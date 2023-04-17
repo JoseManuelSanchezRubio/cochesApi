@@ -9,9 +9,9 @@ namespace cochesApi.Logic.Interfaces
     {
         ActionResult<IEnumerable<CustomerRequest>> GetCustomers();
         ActionResult<CustomerRequest> GetCustomer(int id);
-        CustomerResponseValidation PutCustomer(int id, CustomerRequest customerRequest);
+        ActionResult<CustomerRequest> PutCustomer(int id, CustomerRequest customerRequest);
         ActionResult<CustomerRequest> PostCustomer(CustomerRequest customerRequest);
-        CustomerResponseValidation DeleteCustomer(int id);
+        ActionResult<CustomerRequest> DeleteCustomer(int id);
         string GetToken(CustomerLoginRequest customerLoginRequest);
     }
     

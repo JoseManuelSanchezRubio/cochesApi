@@ -53,7 +53,7 @@ namespace cochesApi.Controllers
         // PUT: api/Car/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public CarResponseValidation PutCar(int id, CarRequest carRequest)
+        public ActionResult<CarResponse> PutCar(int id, CarRequest carRequest)
         {
             return carValidation.PutCar(id, carRequest);
         }
@@ -68,7 +68,7 @@ namespace cochesApi.Controllers
 
         // DELETE: api/Car/5
         [HttpDelete("{id}")]
-        public CarResponseValidation DeleteCar(int id)
+        public ActionResult<CarResponse> DeleteCar(int id)
         {
             return carValidation.DeleteCar(id);
         }

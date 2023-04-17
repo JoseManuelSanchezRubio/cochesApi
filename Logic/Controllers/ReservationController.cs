@@ -42,7 +42,7 @@ namespace cochesApi.Controllers
         // PUT: api/Reservation/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public ReservationResponseValidation PutReservation(int id, ReservationRequest reservationRequest)
+        public ActionResult<ReservationResponse> PutReservation(int id, ReservationRequest reservationRequest)
         {
             return reservationValidation.PutReservation(id, reservationRequest);
         }
@@ -62,7 +62,7 @@ namespace cochesApi.Controllers
         }
         // DELETE: api/Reservation/5
         [HttpDelete("{id}")]
-        public ReservationResponseValidation DeleteReservation(int id)
+        public ActionResult<ReservationResponse> DeleteReservation(int id)
         {
             return reservationValidation.DeleteReservation(id);
         }

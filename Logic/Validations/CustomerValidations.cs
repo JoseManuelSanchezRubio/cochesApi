@@ -66,27 +66,26 @@ namespace cochesApi.Logic.Validations
             return customerRequest;
         }
 
-        public CustomerResponseValidation PutCustomer(int id, CustomerRequest customerRequest)
+        public ActionResult<CustomerRequest> PutCustomer(int id, CustomerRequest customerRequest)
         {
             var customer = queriesCustomer.GetCustomer(id);
-            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(null); // Cambiar en un futuro
 
-            if (customer == null)
-            {
-                customerResponseValidation.Status = false;
-                customerResponseValidation.Message = "Customer does not exist";
-                return customerResponseValidation;
-            }
+            if (customer == null) return Problem("Customer not found");
 
             customer.Name = customerRequest.Name;
             customer.Surname = customerRequest.Surname;
             customer.Email = customerRequest.Email;
 
+            CustomerRequest customerResponse = new CustomerRequest();
+            customerResponse.Name = customer.Name;
+            customerResponse.Surname = customer.Surname;
+            customerResponse.Email = customer.Email;
+
             queries.Update(customer);
 
             queries.SaveChangesAsync();
 
-            return customerResponseValidation;
+            return customerResponse;
 
         }
         public ActionResult<CustomerRequest> PostCustomer(CustomerRequest customerRequest)
@@ -107,21 +106,21 @@ namespace cochesApi.Logic.Validations
 
             return customerResponse;
         }
-        public CustomerResponseValidation DeleteCustomer(int id)
+        public ActionResult<CustomerRequest> DeleteCustomer(int id)
         {
             var customer = queriesCustomer.GetCustomer(id);
-            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(null); // Cambiar en un futuro
-            if (customer == null)
-            {
-                customerResponseValidation.Status = false;
-                customerResponseValidation.Message = "Customer does not exist";
-                return customerResponseValidation;
-            }
+            
+            if (customer == null) return Problem("Customer not found");
+
+            CustomerRequest customerResponse = new CustomerRequest();
+            customerResponse.Name = customer.Name;
+            customerResponse.Surname = customer.Surname;
+            customerResponse.Email = customer.Email;
 
             queriesCustomer.RemoveCustomer(customer);
             queries.SaveChangesAsync();
 
-            return customerResponseValidation;
+            return customerResponse;
         }
         public string GetToken(CustomerLoginRequest customerLoginRequest)
         {

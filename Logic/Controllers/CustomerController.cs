@@ -47,7 +47,7 @@ namespace cochesApi.Controllers
         // PUT: api/Customer/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public CustomerResponseValidation PutCustomer(int id, CustomerRequest customerRequest)
+        public ActionResult<CustomerRequest> PutCustomer(int id, CustomerRequest customerRequest)
         {
             return customerValidation.PutCustomer(id, customerRequest);
         }
@@ -62,7 +62,7 @@ namespace cochesApi.Controllers
 
         // DELETE: api/Customer/5
         [HttpDelete("{id}")]
-        public CustomerResponseValidation DeleteCustomer(int id)
+        public ActionResult<CustomerRequest> DeleteCustomer(int id)
         {
             return customerValidation.DeleteCustomer(id);
         }

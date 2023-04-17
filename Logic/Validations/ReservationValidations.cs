@@ -76,25 +76,27 @@ namespace cochesApi.Logic.Validations
             return reservationResponse;
         }
 
-        public ReservationResponseValidation PutReservation(int id, ReservationRequest reservationRequest)
+        public ActionResult<ReservationResponse> PutReservation(int id, ReservationRequest reservationRequest)
         {
             var reservation = queriesReservation.GetReservation(id);
-            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(null); // Cambiar en un futuro
 
-            if (reservation == null)
-            {
-                reservationResponseValidation.Status = false;
-                reservationResponseValidation.Message = "Reservation does not exist";
-                return reservationResponseValidation;
-            }
+            if (reservation == null) return Problem("Reservation does not exist");
 
             queries.Update(reservation);
 
-
             queries.SaveChangesAsync();
 
+            ReservationResponse reservationResponse = new ReservationResponse();
+            reservationResponse.Id = reservation.Id;
+            reservationResponse.BranchId = reservation.BranchId;
+            reservationResponse.CarId = reservation.CarId;
+            reservationResponse.CustomerId = reservation.CustomerId;
+            reservationResponse.InitialDate = reservation.InitialDate;
+            reservationResponse.FinalDate = reservation.FinalDate;
+            
 
-            return reservationResponseValidation;
+
+            return reservationResponse;
 
         }
 
@@ -258,21 +260,25 @@ namespace cochesApi.Logic.Validations
 
             return reservationResponse;
         }
-        public ReservationResponseValidation DeleteReservation(int id)
+        public ActionResult<ReservationResponse> DeleteReservation(int id)
         {
             var reservation = queriesReservation.GetReservation(id);
-            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(null); // Cambiar en un futuro
-            if (reservation == null)
-            {
-                reservationResponseValidation.Status = false;
-                reservationResponseValidation.Message = "Reservation does not exist";
-                return reservationResponseValidation;
-            }
+
+            if (reservation == null) return Problem("Reservation not found");
+
+            ReservationResponse reservationResponse = new ReservationResponse();
+            reservationResponse.CustomerId = reservation.CustomerId;
+            reservationResponse.BranchId = reservation.BranchId;
+            reservationResponse.CarId = reservation.CarId;
+            reservationResponse.InitialDate = reservation.InitialDate;
+            reservationResponse.FinalDate = reservation.FinalDate;
+            reservationResponse.Id = reservation.Id;
+
 
             queriesReservation.RemoveReservation(reservation);
             queries.SaveChangesAsync();
 
-            return reservationResponseValidation;
+            return reservationResponse;
         }
         public ActionResult<List<ReservationResponse>> GetReservationsByBranch(int id)
         {

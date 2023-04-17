@@ -9,9 +9,9 @@ namespace cochesApi.Logic.Interfaces
     {
         ActionResult<IEnumerable<TypeCarRequest>> GetTypeCars();
         ActionResult<TypeCarRequest> GetTypeCar(int id);
-        TypeCarResponseValidation PutTypeCar(int id, TypeCarRequest typeCarRequest);
+         ActionResult<TypeCarRequest> PutTypeCar(int id, TypeCarRequest typeCarRequest);
         ActionResult<TypeCarRequest> PostTypeCar(TypeCarRequest typeCarRequest);
-        TypeCarResponseValidation DeleteTypeCar(int id);
+         ActionResult<TypeCarRequest> DeleteTypeCar(int id);
     }
     
 }

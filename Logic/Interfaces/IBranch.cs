@@ -10,9 +10,9 @@ namespace cochesApi.Logic.Interfaces
     {
         ActionResult<IEnumerable<BranchRequest>> GetBranches();
         ActionResult<BranchRequest> GetBranch(int id);
-        BranchResponseValidation PutBranch(int id, BranchRequest branchRequest);
+        ActionResult<BranchRequest> PutBranch(int id, BranchRequest branchRequest);
         ActionResult<BranchRequest> PostBranch(BranchRequest branchRequest);
-        BranchResponseValidation DeleteBranch(int id);
+        ActionResult<BranchRequest> DeleteBranch(int id);
     }
     
 }

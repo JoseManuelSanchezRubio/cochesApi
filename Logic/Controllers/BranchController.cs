@@ -38,7 +38,7 @@ namespace cochesApi.Logic.Controllers
         // PUT: api/Branch/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public BranchResponseValidation PutBranch(int id, BranchRequest branchRequest)
+        public ActionResult<BranchRequest> PutBranch(int id, BranchRequest branchRequest)
         {
             return branchValidation.PutBranch(id, branchRequest);
         }
@@ -53,7 +53,7 @@ namespace cochesApi.Logic.Controllers
 
         // DELETE: api/Branch/5
         [HttpDelete("{id}")]
-        public BranchResponseValidation DeleteBranch(int id)
+        public ActionResult<BranchRequest> DeleteBranch(int id)
         {
             return branchValidation.DeleteBranch(id);
         }
