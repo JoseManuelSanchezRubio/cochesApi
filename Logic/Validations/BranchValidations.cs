@@ -7,33 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class BranchResponseValidation
-    {
-        public BranchRequest? BranchResponse { get; set; }
-        public bool Status { get; set; }
-        public string? Message { get; set; }
-
-        public BranchResponseValidation(BranchRequest? branchResponse)
-        {
-            BranchResponse = branchResponse;
-            Status = true;
-            Message = "OK";
-        }
-    }
-
     public class BranchValidation : ControllerBase, IBranch
     {
         private IBranchQueries queriesBranch;
         private IPlanningQueries queriesPlanning;
         private ITypeCarQueries queriesTypeCar;
-        private IDBQueries queries;
+        private IDBQueries queriesDB;
 
         public BranchValidation(IBranchQueries _queriesBranch, IPlanningQueries _queriesPlanning, ITypeCarQueries _queriesTypeCar, IDBQueries _queries)
         {
             queriesBranch = _queriesBranch;
             queriesPlanning = _queriesPlanning;
             queriesTypeCar = _queriesTypeCar;
-            queries = _queries;
+            queriesDB = _queries;
         }
 
         public ActionResult<IEnumerable<BranchRequest>> GetBranches()
@@ -73,9 +59,9 @@ namespace cochesApi.Logic.Validations
             branchResponse.Name=branchRequest.Name;
             branchResponse.Location = branchRequest.Location;
 
-            queries.Update(branch);
+            queriesDB.Update(branch);
 
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return branchResponse;
 
@@ -88,7 +74,7 @@ namespace cochesApi.Logic.Validations
             branch.Location = branchRequest.Location;
 
             queriesBranch.AddBranch(branch);
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
             
 
             var branchh = queriesBranch.GetBranch(branch.Id); //esto es para poder coger el id del branch
@@ -110,7 +96,7 @@ namespace cochesApi.Logic.Validations
                 }
             }
 
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             BranchRequest branchResponse = new BranchRequest();
             branchResponse.Name = branchRequest.Name;
@@ -138,7 +124,7 @@ namespace cochesApi.Logic.Validations
                     queriesPlanning.RemovePlanning(planning);
                 }
             }
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return branchResponse;
         }

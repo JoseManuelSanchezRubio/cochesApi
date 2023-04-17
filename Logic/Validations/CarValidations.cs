@@ -7,23 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class CarResponseValidation
-    {
-        public CarResponse? CarResponse { get; set; }
-        public bool Status { get; set; }
-        public string? Message { get; set; }
-
-        public CarResponseValidation(CarResponse? carResponse)
-        {
-            CarResponse = carResponse;
-            Status = true;
-            Message = "OK";
-        }
-    }
-
     public class CarValidation : ControllerBase, ICar
     {
-        private IDBQueries queries;
+        private IDBQueries queriesDB;
         private IBranchQueries queriesBranch;
         private IPlanningQueries queriesPlanning;
         private ITypeCarQueries queriesTypeCar;
@@ -35,7 +21,7 @@ namespace cochesApi.Logic.Validations
             queriesBranch = _queriesBranch;
             queriesPlanning = _queriesPlanning;
             queriesTypeCar = _queriesTypeCar;
-            queries = _queries;
+            queriesDB = _queries;
             queriesCar = _queriesCar;
         }
 
@@ -122,9 +108,9 @@ namespace cochesApi.Logic.Validations
             }
 
 
-            queries.Update(car);
+            queriesDB.Update(car);
 
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return carResponse;
 
@@ -168,7 +154,7 @@ namespace cochesApi.Logic.Validations
             }
 
             queriesCar.AddCar(car);
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
 
             return carResponse;
@@ -199,7 +185,7 @@ namespace cochesApi.Logic.Validations
             car.isGasoline = car.isGasoline;
 
             queriesCar.RemoveCar(car);
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return carResponse;
         }

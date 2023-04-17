@@ -7,23 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class ReservationResponseValidation
-    {
-        public ReservationResponse? ReservationResponse { get; set; }
-        public bool Status { get; set; }
-        public string? Message { get; set; }
-
-        public ReservationResponseValidation(ReservationResponse? reservationResponse)
-        {
-            ReservationResponse = ReservationResponse;
-            Status = true;
-            Message = "OK";
-        }
-    }
-
     public class ReservationValidation : ControllerBase, IReservation
     {
-        private IDBQueries queries;
+        private IDBQueries queriesDB;
         private IBranchQueries queriesBranch;
         private IPlanningQueries queriesPlanning;
         private ITypeCarQueries queriesTypeCar;
@@ -36,7 +22,7 @@ namespace cochesApi.Logic.Validations
             queriesBranch = _queriesBranch;
             queriesPlanning = _queriesPlanning;
             queriesTypeCar = _queriesTypeCar;
-            queries = _queries;
+            queriesDB = _queries;
             queriesCar = _queriesCar;
             queriesReservation = _queriesReservation;
             queriesCustomer = _queriesCustomer;
@@ -82,9 +68,9 @@ namespace cochesApi.Logic.Validations
 
             if (reservation == null) return Problem("Reservation does not exist");
 
-            queries.Update(reservation);
+            queriesDB.Update(reservation);
 
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             ReservationResponse reservationResponse = new ReservationResponse();
             reservationResponse.Id = reservation.Id;
@@ -106,9 +92,6 @@ namespace cochesApi.Logic.Validations
             var typeCar = queriesTypeCar.GetTypeCar(reservationRequest.TypeCarId);
             var branch = queriesBranch.GetBranch(reservationRequest.BranchId);
             var customer = queriesCustomer.GetCustomer(reservationRequest.CustomerId);
-
-
-            ReservationResponseValidation rrv = new ReservationResponseValidation(null);
 
             if (reservationRequest.InitialDate > reservationRequest.FinalDate) return Problem("Initial date must be before final date");
 
@@ -162,7 +145,7 @@ namespace cochesApi.Logic.Validations
                 planning.AvailableCars--;
             }
 
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             ReservationResponse reservationResponse = new ReservationResponse();
             reservationResponse.InitialDate = reservationRequest.InitialDate;
@@ -184,8 +167,6 @@ namespace cochesApi.Logic.Validations
             var pickUpBranch = queriesBranch.GetBranch(reservationRequestDifferentBranch.PickUpBranchId);
             var returnBranch = queriesBranch.GetBranch(reservationRequestDifferentBranch.ReturnBranchId);
             var customer = queriesCustomer.GetCustomer(reservationRequestDifferentBranch.CustomerId);
-
-            ReservationResponseValidation rrv = new ReservationResponseValidation(null);
 
             if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate) return Problem("Initial date must be before final date");
 
@@ -248,7 +229,7 @@ namespace cochesApi.Logic.Validations
                 planning.AvailableCars++;
             }
 
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             ReservationResponse reservationResponse = new ReservationResponse();
             reservationResponse.InitialDate = reservationRequestDifferentBranch.InitialDate;
@@ -276,7 +257,7 @@ namespace cochesApi.Logic.Validations
 
 
             queriesReservation.RemoveReservation(reservation);
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return reservationResponse;
         }

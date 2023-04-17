@@ -7,31 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class TypeCarResponseValidation
-    {
-        public TypeCarRequest? TypeCarResponse { get; set; }
-        public bool Status { get; set; }
-        public string? Message { get; set; }
-
-        public TypeCarResponseValidation(TypeCarRequest? typeCarResponse)
-        {
-            TypeCarResponse = typeCarResponse;
-            Status = true;
-            Message = "OK";
-        }
-    }
-
     public class TypeCarValidation : ControllerBase, ITypeCar
     {
 
-        private IDBQueries queries;
+        private IDBQueries queriesDB;
         private ITypeCarQueries queriesTypeCar;
 
 
         public TypeCarValidation(IBranchQueries _queriesBranch, IPlanningQueries _queriesPlanning, ITypeCarQueries _queriesTypeCar, IDBQueries _queries, ICarQueries _queriesCar, IReservationQueries _queriesReservation, ICustomerQueries _queriesCustomer)
         {
             queriesTypeCar = _queriesTypeCar;
-            queries = _queries;
+            queriesDB = _queries;
         }
 
         public ActionResult<IEnumerable<TypeCarRequest>> GetTypeCars()
@@ -66,9 +52,9 @@ namespace cochesApi.Logic.Validations
 
             TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
 
-            queries.Update(typeCar);
+            queriesDB.Update(typeCar);
 
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return typeCarResponse;
 
@@ -81,7 +67,7 @@ namespace cochesApi.Logic.Validations
             TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
 
             queriesTypeCar.AddTypeCar(typeCar);
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return typeCarResponse;
         }
@@ -94,7 +80,7 @@ namespace cochesApi.Logic.Validations
             TypeCarRequest typeCarResponse = new TypeCarRequest(typeCar.Name!);
 
             queriesTypeCar.RemoveTypeCar(typeCar);
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return typeCarResponse;
         }

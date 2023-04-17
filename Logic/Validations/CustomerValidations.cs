@@ -11,23 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class CustomerResponseValidation
-    {
-        public CustomerRequest? CustomerResponse { get; set; }
-        public bool Status { get; set; }
-        public string? Message { get; set; }
-
-        public CustomerResponseValidation(CustomerRequest? customerResponse)
-        {
-            CustomerResponse = customerResponse;
-            Status = true;
-            Message = "OK";
-        }
-    }
-
     public class CustomerValidation : ControllerBase, ICustomer
     {
-        private IDBQueries queries;
+        private IDBQueries queriesDB;
         private ICustomerQueries queriesCustomer;
         private readonly IConfiguration _configuration;
 
@@ -35,7 +21,7 @@ namespace cochesApi.Logic.Validations
         public CustomerValidation(IConfiguration configuration, IDBQueries _queries, ICustomerQueries _queriesCustomer)
         {
             _configuration = configuration;
-            queries = _queries;
+            queriesDB = _queries;
             queriesCustomer = _queriesCustomer;
         }
         public ActionResult<IEnumerable<CustomerRequest>> GetCustomers()
@@ -81,9 +67,9 @@ namespace cochesApi.Logic.Validations
             customerResponse.Surname = customer.Surname;
             customerResponse.Email = customer.Email;
 
-            queries.Update(customer);
+            queriesDB.Update(customer);
 
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return customerResponse;
 
@@ -102,14 +88,14 @@ namespace cochesApi.Logic.Validations
             customerResponse.Email = customerRequest.Email;
 
             queriesCustomer.AddCustomer(customer);
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return customerResponse;
         }
         public ActionResult<CustomerRequest> DeleteCustomer(int id)
         {
             var customer = queriesCustomer.GetCustomer(id);
-            
+
             if (customer == null) return Problem("Customer not found");
 
             CustomerRequest customerResponse = new CustomerRequest();
@@ -118,7 +104,7 @@ namespace cochesApi.Logic.Validations
             customerResponse.Email = customer.Email;
 
             queriesCustomer.RemoveCustomer(customer);
-            queries.SaveChangesAsync();
+            queriesDB.SaveChangesAsync();
 
             return customerResponse;
         }
