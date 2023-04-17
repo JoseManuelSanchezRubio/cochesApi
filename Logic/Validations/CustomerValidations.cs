@@ -30,6 +30,7 @@ namespace cochesApi.Logic.Validations
                 customerRequest.Name = customer.Name;
                 customerRequest.Surname = customer.Surname;
                 customerRequest.Age = customer.Age;
+                customerRequest.Photo = customer.Photo;
                 customerRequest.Email = customer.Email;
                 customersRequest.Add(customerRequest);
             }
@@ -45,11 +46,23 @@ namespace cochesApi.Logic.Validations
             customerRequest.Name = customer.Name;
             customerRequest.Surname = customer.Surname;
             customerRequest.Age = customer.Age;
+            customerRequest.Photo = customer.Photo;
             customerRequest.Email = customer.Email;
             return customerRequest;
         }
         public ActionResult<CustomerRequest> PutCustomer(int id, CustomerRequest customerRequest)
         {
+            bool ageOk = false;
+            var ages = Enum.GetValues(typeof(CustomerAge));
+            foreach (CustomerAge age in ages)
+            {
+                if (customerRequest.Age == age)
+                {
+                    ageOk = true;
+                }
+            }
+            if (!ageOk) return Problem("Invalid Age. It must be from 1 to 3");
+
             var customer = queriesCustomer.GetCustomer(id);
 
             if (customer == null) return Problem("Customer not found");
@@ -57,12 +70,14 @@ namespace cochesApi.Logic.Validations
             customer.Name = customerRequest.Name;
             customer.Surname = customerRequest.Surname;
             customer.Age = customerRequest.Age;
+            customer.Photo = customerRequest.Photo;
             customer.Email = customerRequest.Email;
 
             CustomerRequest customerResponse = new CustomerRequest();
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
             customerResponse.Age = customer.Age;
+            customerResponse.Photo = customer.Photo;
             customerResponse.Email = customer.Email;
 
             queriesDB.Update(customer);
@@ -74,10 +89,22 @@ namespace cochesApi.Logic.Validations
         }
         public ActionResult<CustomerRequest> PostCustomer(CustomerRequest customerRequest)
         {
+            bool ageOk = false;
+            var ages = Enum.GetValues(typeof(CustomerAge));
+            foreach (CustomerAge age in ages)
+            {
+                if (customerRequest.Age == age)
+                {
+                    ageOk = true;
+                }
+            }
+            if (!ageOk) return Problem("Invalid Age. It must be from 1 to 3");
+
             Customer customer = new Customer();
             customer.Name = customerRequest.Name;
             customer.Surname = customerRequest.Surname;
             customer.Age = customerRequest.Age;
+            customer.Photo = customerRequest.Photo;
             customer.Email = customerRequest.Email;
             customer.Password = BCrypt.Net.BCrypt.HashPassword(customerRequest.Password);
 
@@ -85,6 +112,7 @@ namespace cochesApi.Logic.Validations
             customerResponse.Name = customerRequest.Name;
             customerResponse.Surname = customerRequest.Surname;
             customerResponse.Age = customerRequest.Age;
+            customerResponse.Photo = customerRequest.Photo;
             customerResponse.Email = customerRequest.Email;
 
             queriesCustomer.AddCustomer(customer);
@@ -102,6 +130,7 @@ namespace cochesApi.Logic.Validations
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
             customerResponse.Age = customer.Age;
+            customerResponse.Photo = customer.Photo;
             customerResponse.Email = customer.Email;
 
             queriesCustomer.RemoveCustomer(customer);

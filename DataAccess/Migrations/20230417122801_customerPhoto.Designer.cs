@@ -3,6 +3,7 @@ using System;
 using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cochesApi.Migrations
 {
     [DbContext(typeof(myAppContext))]
-    partial class myAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230417122801_customerPhoto")]
+    partial class customerPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,15 +148,6 @@ namespace cochesApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ReturnBranchId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("hasGPS")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("isInternational")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("numberOfDrivers")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

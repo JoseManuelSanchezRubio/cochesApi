@@ -37,6 +37,9 @@ namespace cochesApi.Logic.Validations
                 reservationResponse.CustomerId = reservation.CustomerId;
                 reservationResponse.InitialDate = reservation.InitialDate;
                 reservationResponse.FinalDate = reservation.FinalDate;
+                reservationResponse.isInternational = reservation.isInternational;
+                reservationResponse.hasGPS = reservation.hasGPS;
+                reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
                 reservationsList.Add(reservationResponse);
             }
             return reservationsList;
@@ -54,6 +57,9 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservation.CustomerId;
             reservationResponse.InitialDate = reservation.InitialDate;
             reservationResponse.FinalDate = reservation.FinalDate;
+            reservationResponse.isInternational = reservation.isInternational;
+            reservationResponse.hasGPS = reservation.hasGPS;
+            reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
 
             return reservationResponse;
         }
@@ -62,6 +68,8 @@ namespace cochesApi.Logic.Validations
             var reservation = queriesReservation.GetReservation(id);
 
             if (reservation == null) return Problem("Reservation does not exist");
+
+            if (reservationRequest.numberOfDrivers > 3) return Problem("Number of drivers cannot be greater than 3");
 
             queriesDB.Update(reservation);
 
@@ -74,6 +82,9 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservation.CustomerId;
             reservationResponse.InitialDate = reservation.InitialDate;
             reservationResponse.FinalDate = reservation.FinalDate;
+            reservationResponse.isInternational = reservation.isInternational;
+            reservationResponse.hasGPS = reservation.hasGPS;
+            reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
 
             return reservationResponse;
         }
@@ -86,6 +97,8 @@ namespace cochesApi.Logic.Validations
             var customer = queriesCustomer.GetCustomer(reservationRequest.CustomerId);
 
             if (reservationRequest.InitialDate > reservationRequest.FinalDate) return Problem("Initial date must be before final date");
+
+            if (reservationRequest.numberOfDrivers > 3) return Problem("Number of drivers cannot be greater than 3");
 
             if (typeCar?.Cars == null) return Problem("Type car does not exist");
 
@@ -120,6 +133,9 @@ namespace cochesApi.Logic.Validations
             reservation.CarId = carToBook!.Id;
             reservation.CustomerId = reservationRequest.CustomerId;
             reservation.BranchId = reservation.BranchId;
+            reservation.isInternational = reservationRequest.isInternational;
+            reservation.hasGPS = reservationRequest.hasGPS;
+            reservation.numberOfDrivers = reservationRequest.numberOfDrivers;
             reservation.Car = carToBook;
             reservation.Customer = customer;
             reservation.Branch = branch;
@@ -143,6 +159,9 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CarId = carToBook.Id;
             reservationResponse.CustomerId = reservationRequest.CustomerId;
             reservationResponse.BranchId = reservationRequest.BranchId;
+            reservationResponse.isInternational = reservationRequest.isInternational;
+            reservationResponse.hasGPS = reservationRequest.hasGPS;
+            reservationResponse.numberOfDrivers = reservationRequest.numberOfDrivers;
 
             return reservationResponse;
         }
@@ -154,6 +173,8 @@ namespace cochesApi.Logic.Validations
             var customer = queriesCustomer.GetCustomer(reservationRequestDifferentBranch.CustomerId);
 
             if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate) return Problem("Initial date must be before final date");
+
+            if (reservationRequestDifferentBranch.numberOfDrivers > 3) return Problem("Number of drivers cannot be greater than 3");
 
             if (typeCar?.Cars == null) return Problem("Type car does not exist");
 
@@ -185,6 +206,9 @@ namespace cochesApi.Logic.Validations
             reservation.CarId = carToBook!.Id;
             reservation.CustomerId = reservationRequestDifferentBranch.CustomerId;
             reservation.BranchId = reservation.BranchId;
+            reservation.isInternational = reservationRequestDifferentBranch.isInternational;
+            reservation.hasGPS = reservationRequestDifferentBranch.hasGPS;
+            reservation.numberOfDrivers = reservationRequestDifferentBranch.numberOfDrivers;
             reservation.Car = carToBook;
             reservation.Customer = customer;
             reservation.Branch = pickUpBranch;
@@ -220,6 +244,9 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CarId = carToBook.Id;
             reservationResponse.CustomerId = reservationRequestDifferentBranch.CustomerId;
             reservationResponse.BranchId = reservationRequestDifferentBranch.PickUpBranchId;
+            reservationResponse.isInternational = reservationRequestDifferentBranch.isInternational;
+            reservationResponse.hasGPS = reservationRequestDifferentBranch.hasGPS;
+            reservationResponse.numberOfDrivers = reservationRequestDifferentBranch.numberOfDrivers;
 
             return reservationResponse;
         }
@@ -236,6 +263,9 @@ namespace cochesApi.Logic.Validations
             reservationResponse.InitialDate = reservation.InitialDate;
             reservationResponse.FinalDate = reservation.FinalDate;
             reservationResponse.Id = reservation.Id;
+            reservationResponse.isInternational = reservation.isInternational;
+            reservationResponse.hasGPS = reservation.hasGPS;
+            reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
 
             queriesReservation.RemoveReservation(reservation);
             queriesDB.SaveChangesAsync();
@@ -261,6 +291,9 @@ namespace cochesApi.Logic.Validations
                     reservationResponse.CustomerId = reservation.CustomerId;
                     reservationResponse.InitialDate = reservation.InitialDate;
                     reservationResponse.FinalDate = reservation.FinalDate;
+                    reservationResponse.isInternational = reservation.isInternational;
+                    reservationResponse.hasGPS = reservation.hasGPS;
+                    reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
 
                     reservationsList.Add(reservationResponse);
                 }
@@ -286,6 +319,9 @@ namespace cochesApi.Logic.Validations
                     reservationResponse.CustomerId = reservation.CustomerId;
                     reservationResponse.InitialDate = reservation.InitialDate;
                     reservationResponse.FinalDate = reservation.FinalDate;
+                    reservationResponse.isInternational = reservation.isInternational;
+                    reservationResponse.hasGPS = reservation.hasGPS;
+                    reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
 
                     reservationsList.Add(reservationResponse);
                 }
@@ -311,6 +347,9 @@ namespace cochesApi.Logic.Validations
                     reservationResponse.CustomerId = reservation.CustomerId;
                     reservationResponse.InitialDate = reservation.InitialDate;
                     reservationResponse.FinalDate = reservation.FinalDate;
+                    reservationResponse.isInternational = reservation.isInternational;
+                    reservationResponse.hasGPS = reservation.hasGPS;
+                    reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
 
                     reservationsList.Add(reservationResponse);
                 }
@@ -333,6 +372,9 @@ namespace cochesApi.Logic.Validations
                     reservationResponse.CustomerId = reservation.CustomerId;
                     reservationResponse.InitialDate = reservation.InitialDate;
                     reservationResponse.FinalDate = reservation.FinalDate;
+                    reservationResponse.isInternational = reservation.isInternational;
+                    reservationResponse.hasGPS = reservation.hasGPS;
+                    reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
 
                     reservationsList.Add(reservationResponse);
                 }
