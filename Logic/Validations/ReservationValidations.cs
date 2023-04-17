@@ -21,7 +21,7 @@ namespace cochesApi.Logic.Validations
         }
     }
 
-    public class ReservationValidation : IReservation
+    public class ReservationValidation : ControllerBase, IReservation
     {
         private IDBQueries queries;
         private IBranchQueries queriesBranch;
@@ -63,7 +63,7 @@ namespace cochesApi.Logic.Validations
         {
             var reservation = queriesReservation.GetReservation(id);
 
-            if (reservation == null) return null!;
+            if (reservation == null) return Problem("Reservation does not exist");
 
             ReservationResponse reservationResponse = new ReservationResponse();
             reservationResponse.Id = reservation.Id;
@@ -98,7 +98,7 @@ namespace cochesApi.Logic.Validations
 
         }
 
-        public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)
+        public ActionResult<ReservationResponse> PostReservation(ReservationRequest reservationRequest)
         {
             //Comprobaciones
             var typeCar = queriesTypeCar.GetTypeCar(reservationRequest.TypeCarId);
@@ -108,30 +108,14 @@ namespace cochesApi.Logic.Validations
 
             ReservationResponseValidation rrv = new ReservationResponseValidation(null);
 
-            if (reservationRequest.InitialDate > reservationRequest.FinalDate)
-            {
-                rrv.Status = false;
-                rrv.Message = "Wrong dates";
-                return rrv;
-            }
-            if (typeCar?.Cars == null)
-            {
-                rrv.Status = false;
-                rrv.Message = "TypeCar empty";
-                return rrv;
-            }
-            if (branch == null)
-            {
-                rrv.Status = false;
-                rrv.Message = "Branch does not exist";
-                return rrv;
-            }
-            if (customer == null)
-            {
-                rrv.Status = false;
-                rrv.Message = "Customer does not exist";
-                return rrv;
-            }
+            if (reservationRequest.InitialDate > reservationRequest.FinalDate) return Problem("Initial date must be before final date");
+
+            if (typeCar?.Cars == null) return Problem("Type car does not exist");
+
+            if (branch == null) return Problem("Branch does not exist");
+
+            if (customer == null) return Problem("Customer does not exist");
+
             /* if(queriesPlanning.GetAvailableCarsByBranchByTypeCarByDate(reservationRequest.BranchId, reservationRequest.TypeCarId, reservationRequest.InitialDate) == 0){
                 rrv.Status = false;
                 rrv.Message = "Customer does not exist";
@@ -142,12 +126,7 @@ namespace cochesApi.Logic.Validations
 
             foreach (Planning planning in plannings)
             {
-                if (planning.AvailableCars == 0)
-                {
-                    rrv.Status = false;
-                    rrv.Message = "No cars available";
-                    return rrv;
-                }
+                if (planning.AvailableCars == 0) return Problem("No cars available");
             }
 
 
@@ -196,14 +175,14 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservationRequest.CustomerId;
             reservationResponse.BranchId = reservationRequest.BranchId;
 
-            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
+            /* ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse); */
 
 
-            return reservationResponseValidation;
+            return reservationResponse;
 
         }
 
-        public ReservationResponseValidation PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch)
+        public ActionResult<ReservationResponse> PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch)
         {
 
             var typeCar = queriesTypeCar.GetTypeCar(reservationRequestDifferentBranch.TypeCarId);
@@ -213,42 +192,18 @@ namespace cochesApi.Logic.Validations
 
             ReservationResponseValidation rrv = new ReservationResponseValidation(null);
 
-            if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate)
-            {
-                rrv.Status = false;
-                rrv.Message = "Wrong dates";
-                return rrv;
-            }
-            if (typeCar?.Cars == null)
-            {
-                rrv.Status = false;
-                rrv.Message = "TypeCar empty";
-                return rrv;
-            }
-            if (pickUpBranch == null)
-            {
-                rrv.Status = false;
-                rrv.Message = "PickUpBranch does not exist";
-                return rrv;
-            }
-            if (returnBranch == null)
-            {
-                rrv.Status = false;
-                rrv.Message = "ReturnBranch does not exist";
-                return rrv;
-            }
-            if (customer == null)
-            {
-                rrv.Status = false;
-                rrv.Message = "Customer does not exist";
-                return rrv;
-            }
-            if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0)
-            {
-                rrv.Status = false;
-                rrv.Message = "No cars available";
-                return rrv;
-            }
+            if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate) return Problem("Initial date must be before final date");
+
+            if (typeCar?.Cars == null) return Problem("Type car does not exist");
+
+            if (pickUpBranch == null) return Problem("Pick up branch does not exist");
+
+            if (returnBranch == null) return Problem("Return branch does not exist");
+
+            if (customer == null) return Problem("Customer does not exist");
+
+            if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0) return Problem("No cars available");
+
 
             
 
@@ -312,10 +267,10 @@ namespace cochesApi.Logic.Validations
             reservationResponse.CustomerId = reservationRequestDifferentBranch.CustomerId;
             reservationResponse.BranchId = reservationRequestDifferentBranch.PickUpBranchId;
 
-            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
+            /* ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse); */
 
 
-            return reservationResponseValidation;
+            return reservationResponse;
         }
         public ReservationResponseValidation DeleteReservation(int id)
         {

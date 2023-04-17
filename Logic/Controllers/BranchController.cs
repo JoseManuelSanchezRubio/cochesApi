@@ -32,11 +32,7 @@ namespace cochesApi.Logic.Controllers
         [HttpGet("{id}")]
         public ActionResult<BranchRequest> GetBranch(int id)
         {
-            var branchRequest = branchValidation.GetBranch(id);
-
-            if (branchRequest == null) return NotFound("Branch does not exist");
-
-            return branchRequest;
+            return branchValidation.GetBranch(id);
         }
 
         // PUT: api/Branch/5
@@ -50,7 +46,7 @@ namespace cochesApi.Logic.Controllers
         // POST: api/Branch
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public BranchResponseValidation PostBranch(BranchRequest branchRequest)
+        public ActionResult<BranchRequest> PostBranch(BranchRequest branchRequest)
         {
             return branchValidation.PostBranch(branchRequest);
         }

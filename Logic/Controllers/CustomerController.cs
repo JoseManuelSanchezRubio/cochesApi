@@ -41,11 +41,7 @@ namespace cochesApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<CustomerRequest> GetCustomer(int id)
         {
-            var customerRequest = customerValidation.GetCustomer(id);
-
-            if (customerRequest == null) return NotFound("Customer does not exist");
-
-            return customerRequest;
+            return customerValidation.GetCustomer(id);
         }
 
         // PUT: api/Customer/5
@@ -59,7 +55,7 @@ namespace cochesApi.Controllers
         // POST: api/Customer
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public CustomerResponseValidation PostCustomer(CustomerRequest customerRequest)
+        public ActionResult<CustomerRequest> PostCustomer(CustomerRequest customerRequest)
         {
             return customerValidation.PostCustomer(customerRequest);
         }

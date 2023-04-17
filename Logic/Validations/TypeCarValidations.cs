@@ -21,7 +21,7 @@ namespace cochesApi.Logic.Validations
         }
     }
 
-    public class TypeCarValidation : ITypeCar
+    public class TypeCarValidation : ControllerBase, ITypeCar
     {
 
         private IDBQueries queries;
@@ -49,7 +49,7 @@ namespace cochesApi.Logic.Validations
         {
             var typeCar = queriesTypeCar.GetTypeCar(id)!;
 
-            if (typeCar == null) return null!;
+            if (typeCar == null) return Problem("TypeCar does not exist");
 
             TypeCarRequest typeCarRequest = new TypeCarRequest(typeCar.Name!);
 
@@ -77,19 +77,19 @@ namespace cochesApi.Logic.Validations
             return typeCarResponseValidation;
 
         }
-        public TypeCarResponseValidation PostTypeCar(TypeCarRequest typeCarRequest)
+        public ActionResult<TypeCarRequest> PostTypeCar(TypeCarRequest typeCarRequest)
         {
             TypeCar typeCar = new TypeCar();
             typeCar.Name = typeCarRequest.Name;
 
             TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
 
-            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
+            /* TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse); */
 
             queriesTypeCar.AddTypeCar(typeCar);
             queries.SaveChangesAsync();
 
-            return typeCarResponseValidation;
+            return typeCarResponse;
         }
         public TypeCarResponseValidation DeleteTypeCar(int id)
         {

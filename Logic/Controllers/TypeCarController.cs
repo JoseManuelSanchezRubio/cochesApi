@@ -33,11 +33,7 @@ namespace cochesApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<TypeCarRequest> GetTypeCar(int id)
         {
-            var typeCarRequest = typeCarValidation.GetTypeCar(id);
-
-            if (typeCarRequest == null) return NotFound("TypeCar does not exist");
-
-            return typeCarRequest;
+            return typeCarValidation.GetTypeCar(id);
         }
 
         // PUT: api/TypeCar/5
@@ -51,7 +47,7 @@ namespace cochesApi.Controllers
         // POST: api/TypeCar
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public TypeCarResponseValidation PostTypeCar(TypeCarRequest typeCarRequest)
+        public ActionResult<TypeCarRequest> PostTypeCar(TypeCarRequest typeCarRequest)
         {
           return typeCarValidation.PostTypeCar(typeCarRequest);
         }

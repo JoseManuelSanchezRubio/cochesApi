@@ -33,11 +33,7 @@ namespace cochesApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<CarResponse> GetCar(int id)
         {
-            var carRequest = carValidation.GetCar(id);
-
-            if (carRequest == null) return NotFound();
-
-            return carRequest;
+            return carValidation.GetCar(id);
         }
         [HttpGet("branch/{id}")]
         public ActionResult<List<CarResponse>> GetCarsByBranch(int id)
@@ -65,7 +61,7 @@ namespace cochesApi.Controllers
         // POST: api/Car
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public CarResponseValidation PostCar(CarRequest carRequest)
+        public ActionResult<CarResponse> PostCar(CarRequest carRequest)
         {
             return carValidation.PostCar(carRequest);
         }

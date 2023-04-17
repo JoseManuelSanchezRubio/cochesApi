@@ -21,7 +21,7 @@ namespace cochesApi.Logic.Validations
         }
     }
 
-    public class CarValidation : ICar
+    public class CarValidation : ControllerBase, ICar
     {
         private IDBQueries queries;
         private IBranchQueries queriesBranch;
@@ -61,6 +61,8 @@ namespace cochesApi.Logic.Validations
         public ActionResult<CarResponse> GetCar(int id)
         {
             var car = queriesCar.GetCar(id);
+
+            if(car==null) return Problem("Car does not exist");
 
             CarResponse carResponse = new CarResponse();
             carResponse.Id = car.Id;
@@ -111,6 +113,8 @@ namespace cochesApi.Logic.Validations
             car.Branch = branch;
             car.TypeCar = typeCar;
 
+            
+
             var oldPlannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(firstBranchId, firstTypeCarId, DateTime.Now.Date, queriesPlanning.GetPlanning(queriesPlanning.GetPlannings().Count).Day.Date);
             foreach (Planning planning in oldPlannings)
             {
@@ -130,7 +134,7 @@ namespace cochesApi.Logic.Validations
             return carResponseValidation;
 
         }
-        public CarResponseValidation PostCar(CarRequest carRequest)
+        public ActionResult<CarResponse> PostCar(CarRequest carRequest)
         {
             var branch = queriesBranch.GetBranch(carRequest.BranchId);
             var typeCar = queriesTypeCar.GetTypeCar(carRequest.TypeCarId);
@@ -143,30 +147,23 @@ namespace cochesApi.Logic.Validations
             car.BranchId = carRequest.BranchId;
             car.TypeCarId = carRequest.TypeCarId;
             car.Branch = branch;
-            branch!.Cars.Add(car);
-            typeCar!.Cars.Add(car);
+            car.TypeCar = typeCar;
 
             CarResponse carResponse = new CarResponse();
             carResponse.BranchId = carRequest.BranchId;
             carResponse.TypeCarId = carRequest.TypeCarId;
             car.Model = carRequest.Model;
             car.Brand = carRequest.Brand;
+            car.isAutomatic = carRequest.isAutomatic;
+            car.isGasoline = carRequest.isGasoline;
 
 
-            CarResponseValidation carResponseValidation = new CarResponseValidation(carResponse);
+            //CarResponseValidation carResponseValidation = new CarResponseValidation(carResponse);
 
-            if (branch == null)
-            {
-                carResponseValidation.Status = false;
-                carResponseValidation.Message = "Branch does not exist";
-                return carResponseValidation;
-            }
-            if (typeCar == null)
-            {
-                carResponseValidation.Status = false;
-                carResponseValidation.Message = "TypeCar does not exist";
-                return carResponseValidation;
-            }
+            if (branch == null) return Problem("Branch does not exist");
+
+            if (typeCar == null) return Problem("TypeCar does not exist");
+
 
             var plannings = queriesPlanning.GetPlannings(); ;
             foreach (Planning planning in plannings)
@@ -181,7 +178,7 @@ namespace cochesApi.Logic.Validations
             queries.SaveChangesAsync();
 
 
-            return carResponseValidation;
+            return carResponse;
         }
         public CarResponseValidation DeleteCar(int id)
         {

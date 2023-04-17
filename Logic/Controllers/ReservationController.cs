@@ -52,14 +52,14 @@ namespace cochesApi.Controllers
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "customer")]
-        public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)
+        public ActionResult<ReservationResponse> PostReservation(ReservationRequest reservationRequest)
         {
             return reservationValidation.PostReservation(reservationRequest);
         }
         [HttpPost("reservationOnDifferentBranch")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "customer")]
-        public ReservationResponseValidation PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch){
+        public ActionResult<ReservationResponse> PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch){
             return reservationValidation.PostReservationOnDifferentBranch(reservationRequestDifferentBranch);
         }
         // DELETE: api/Reservation/5

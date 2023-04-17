@@ -9,7 +9,7 @@ namespace cochesApi.Logic.Interfaces
         ActionResult<IEnumerable<CarResponse>> GetCars();
         ActionResult<CarResponse> GetCar(int id);
         CarResponseValidation PutCar(int id, CarRequest carRequest);
-        CarResponseValidation PostCar(CarRequest carRequest);
+        ActionResult<CarResponse> PostCar(CarRequest carRequest);
         CarResponseValidation DeleteCar(int id);
         ActionResult<List<CarResponse>> GetCarsByBranch(int id);
         ActionResult<List<CarResponse>> GetCarsByTypeCar(int id);

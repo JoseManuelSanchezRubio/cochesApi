@@ -21,7 +21,7 @@ namespace cochesApi.Logic.Validations
         }
     }
 
-    public class BranchValidation : IBranch
+    public class BranchValidation : ControllerBase, IBranch
     {
         private IBranchQueries queriesBranch;
         private IPlanningQueries queriesPlanning;
@@ -52,7 +52,7 @@ namespace cochesApi.Logic.Validations
         public ActionResult<BranchRequest> GetBranch(int id)
         {
             var branch = queriesBranch.GetBranch(id);
-            if (branch == null) return null!;
+            if (branch == null) return NotFound("Branch does not exist");
             BranchRequest branchRequest = new BranchRequest();
             branchRequest.Name = branch.Name;
             branchRequest.Location = branch.Location;
@@ -81,7 +81,7 @@ namespace cochesApi.Logic.Validations
             return branchResponseValidation;
 
         }
-        public BranchResponseValidation PostBranch(BranchRequest branchRequest)
+        public ActionResult<BranchRequest> PostBranch(BranchRequest branchRequest)
         {
             List<TypeCar> typeCars = queriesTypeCar.GetTypeCars();
             Branch branch = new Branch();
@@ -117,9 +117,9 @@ namespace cochesApi.Logic.Validations
             branchResponse.Name = branchRequest.Name;
             branchResponse.Location = branchRequest.Location;
 
-            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchResponse);
+            //BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchResponse);
 
-            return branchResponseValidation;
+            return branchResponse;
         }
         public BranchResponseValidation DeleteBranch(int id)
         {

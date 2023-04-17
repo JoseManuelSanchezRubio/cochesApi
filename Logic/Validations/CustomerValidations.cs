@@ -25,12 +25,12 @@ namespace cochesApi.Logic.Validations
         }
     }
 
-    public class CustomerValidation : ICustomer
+    public class CustomerValidation : ControllerBase, ICustomer
     {
         private IDBQueries queries;
         private ICustomerQueries queriesCustomer;
         private readonly IConfiguration _configuration;
-        
+
 
         public CustomerValidation(IConfiguration configuration, IDBQueries _queries, ICustomerQueries _queriesCustomer)
         {
@@ -57,7 +57,7 @@ namespace cochesApi.Logic.Validations
         {
             var customer = queriesCustomer.GetCustomer(id)!;
 
-            if (customer == null) return null!;
+            if (customer == null) return Problem("Customer not found");
 
             CustomerRequest customerRequest = new CustomerRequest();
             customerRequest.Name = customer.Name;
@@ -89,7 +89,7 @@ namespace cochesApi.Logic.Validations
             return customerResponseValidation;
 
         }
-        public CustomerResponseValidation PostCustomer(CustomerRequest customerRequest)
+        public ActionResult<CustomerRequest> PostCustomer(CustomerRequest customerRequest)
         {
             Customer customer = new Customer();
             customer.Name = customerRequest.Name;
@@ -102,12 +102,12 @@ namespace cochesApi.Logic.Validations
             customerResponse.Surname = customerRequest.Surname;
             customerResponse.Email = customerRequest.Email;
 
-            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
+            /* CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse); */
 
             queriesCustomer.AddCustomer(customer);
             queries.SaveChangesAsync();
 
-            return customerResponseValidation;
+            return customerResponse;
         }
         public CustomerResponseValidation DeleteCustomer(int id)
         {
@@ -127,8 +127,8 @@ namespace cochesApi.Logic.Validations
         }
         public string GetToken(CustomerLoginRequest customerLoginRequest)
         {
-            if(customerLoginRequest.Equals == null || customerLoginRequest.Password == null) return "Wrong Data";
-            
+            if (customerLoginRequest.Equals == null || customerLoginRequest.Password == null) return "Wrong Data";
+
             var customer = queriesCustomer.GetCustomerByEmail(customerLoginRequest.Email!);
 
             if (!BCrypt.Net.BCrypt.Verify(customerLoginRequest.Password, customer.Password)) return "Wrong password";
