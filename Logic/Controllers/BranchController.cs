@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using cochesApi.Logic.Models;
 using cochesApi.Logic.Interfaces;
+using cochesApi.Logic.Validations;
 
 namespace cochesApi.Logic.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BranchController : ControllerBase
+    public class BranchController
     {
         private IBranch branchValidation;
         public BranchController(IBranch _branch)
@@ -15,31 +16,31 @@ namespace cochesApi.Logic.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<BranchRequest>> GetBranches()
+        public IEnumerable<BranchRequest> GetBranches()
         {
             return branchValidation.GetBranches();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<BranchRequest> GetBranch(int id)
+        public BranchResponseValidation GetBranch(int id)
         {
             return branchValidation.GetBranch(id);
         }
         
         [HttpPut("{id}")]
-        public ActionResult<BranchRequest> PutBranch(int id, BranchRequest branchRequest)
+        public BranchResponseValidation PutBranch(int id, BranchRequest branchRequest)
         {
-            return branchValidation.PutBranch(id, branchRequest);
+            return branchValidation.UpdateBranch(id, branchRequest);
         }
         
         [HttpPost]
-        public ActionResult<BranchRequest> PostBranch(BranchRequest branchRequest)
+        public BranchResponseValidation PostBranch(BranchRequest branchRequest)
         {
-            return branchValidation.PostBranch(branchRequest);
+            return branchValidation.CreateBranch(branchRequest);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<BranchRequest> DeleteBranch(int id)
+        public BranchResponseValidation DeleteBranch(int id)
         {
             return branchValidation.DeleteBranch(id);
         }

@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using cochesApi.Logic.Models;
 using cochesApi.Logic.Interfaces;
+using cochesApi.Logic.Validations;
 
 namespace cochesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TypeCarController : ControllerBase
+    public class TypeCarController
     {
         private ITypeCar typeCarValidation;
         public TypeCarController(ITypeCar _typeCar)
@@ -15,31 +16,31 @@ namespace cochesApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<TypeCarRequest>> GetTypeCars()
+        public List<TypeCarRequest> GetTypeCars()
         {
             return typeCarValidation.GetTypeCars();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TypeCarRequest> GetTypeCar(int id)
+        public TypeCarResponseValidation GetTypeCar(int id)
         {
             return typeCarValidation.GetTypeCar(id);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<TypeCarRequest> PutTypeCar(int id, TypeCarRequest typeCarRequest)
+        public TypeCarResponseValidation PutTypeCar(int id, TypeCarRequest typeCarRequest)
         {
-            return typeCarValidation.PutTypeCar(id, typeCarRequest);
+            return typeCarValidation.UpdateTypeCar(id, typeCarRequest);
         }
 
         [HttpPost]
-        public ActionResult<TypeCarRequest> PostTypeCar(TypeCarRequest typeCarRequest)
+        public TypeCarResponseValidation PostTypeCar(TypeCarRequest typeCarRequest)
         {
-            return typeCarValidation.PostTypeCar(typeCarRequest);
+            return typeCarValidation.CreateTypeCar(typeCarRequest);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<TypeCarRequest> DeleteTypeCar(int id)
+        public TypeCarResponseValidation DeleteTypeCar(int id)
         {
             return typeCarValidation.DeleteTypeCar(id);
         }

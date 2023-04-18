@@ -8,7 +8,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class CustomerValidation : ControllerBase, ICustomer
+    public class CustomerResponseValidation
+    {
+        public CustomerRequest? CustomerResponse { get; set; }
+        public bool Status { get; set; }
+        public string? Message { get; set; }
+
+        public CustomerResponseValidation(CustomerRequest? customerResponse)
+        {
+            CustomerResponse = customerResponse;
+            Status = true;
+            Message = "OK";
+        }
+    }
+    public class CustomerValidation : ICustomer
     {
         private IDBQueries queriesDB;
         private ICustomerQueries queriesCustomer;
@@ -20,7 +33,7 @@ namespace cochesApi.Logic.Validations
             queriesDB = _queries;
             queriesCustomer = _queriesCustomer;
         }
-        public ActionResult<IEnumerable<CustomerRequest>> GetCustomers()
+        public List<CustomerRequest> GetCustomers()
         {
             var customers = queriesCustomer.GetCustomers();
             List<CustomerRequest> customersRequest = new List<CustomerRequest>();
@@ -36,11 +49,16 @@ namespace cochesApi.Logic.Validations
             }
             return customersRequest;
         }
-        public ActionResult<CustomerRequest> GetCustomer(int id)
+        public CustomerResponseValidation GetCustomer(int id)
         {
             var customer = queriesCustomer.GetCustomer(id)!;
 
-            if (customer == null) return Problem("Customer not found");
+            if (customer == null) {
+                CustomerResponseValidation crv = new CustomerResponseValidation(null);
+                crv.Status = false;
+                crv.Message = "Customer not found";
+                return crv;
+            }
 
             CustomerRequest customerRequest = new CustomerRequest();
             customerRequest.Name = customer.Name;
@@ -48,9 +66,12 @@ namespace cochesApi.Logic.Validations
             customerRequest.Age = customer.Age;
             customerRequest.Photo = customer.Photo;
             customerRequest.Email = customer.Email;
-            return customerRequest;
+
+            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerRequest);
+
+            return customerResponseValidation;
         }
-        public ActionResult<CustomerRequest> PutCustomer(int id, CustomerRequest customerRequest)
+        public CustomerResponseValidation UpdateCustomer(int id, CustomerRequest customerRequest)
         {
             bool ageOk = false;
             var ages = Enum.GetValues(typeof(CustomerAge));
@@ -61,11 +82,21 @@ namespace cochesApi.Logic.Validations
                     ageOk = true;
                 }
             }
-            if (!ageOk) return Problem("Invalid Age. It must be from 1 to 3");
+            CustomerResponseValidation crv = new CustomerResponseValidation(null);
+
+            if (!ageOk){
+                crv.Status = false;
+                crv.Message = "Invalid Age";
+                return crv;
+            }
 
             var customer = queriesCustomer.GetCustomer(id);
 
-            if (customer == null) return Problem("Customer not found");
+            if (customer == null){
+                crv.Status = false;
+                crv.Message = "Customer not found";
+                return crv;
+            }
 
             customer.Name = customerRequest.Name;
             customer.Surname = customerRequest.Surname;
@@ -80,14 +111,16 @@ namespace cochesApi.Logic.Validations
             customerResponse.Photo = customer.Photo;
             customerResponse.Email = customer.Email;
 
+            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
+
             queriesDB.Update(customer);
 
             queriesDB.SaveChangesAsync();
 
-            return customerResponse;
+            return customerResponseValidation;
 
         }
-        public ActionResult<CustomerRequest> PostCustomer(CustomerRequest customerRequest)
+        public CustomerResponseValidation CreateCustomer(CustomerRequest customerRequest)
         {
             bool ageOk = false;
             var ages = Enum.GetValues(typeof(CustomerAge));
@@ -98,7 +131,13 @@ namespace cochesApi.Logic.Validations
                     ageOk = true;
                 }
             }
-            if (!ageOk) return Problem("Invalid Age. It must be from 1 to 3");
+            CustomerResponseValidation crv = new CustomerResponseValidation(null);
+
+            if (!ageOk){
+                crv.Status = false;
+                crv.Message = "Invalid Age";
+                return crv;
+            }
 
             Customer customer = new Customer();
             customer.Name = customerRequest.Name;
@@ -115,16 +154,23 @@ namespace cochesApi.Logic.Validations
             customerResponse.Photo = customerRequest.Photo;
             customerResponse.Email = customerRequest.Email;
 
+            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
+
             queriesCustomer.AddCustomer(customer);
             queriesDB.SaveChangesAsync();
 
-            return customerResponse;
+            return customerResponseValidation;
         }
-        public ActionResult<CustomerRequest> DeleteCustomer(int id)
+        public CustomerResponseValidation DeleteCustomer(int id)
         {
             var customer = queriesCustomer.GetCustomer(id);
 
-            if (customer == null) return Problem("Customer not found");
+            if (customer == null){
+                CustomerResponseValidation crv = new CustomerResponseValidation(null);
+                crv.Status = false;
+                crv.Message = "Customer not found";
+                return crv;
+            }
 
             CustomerRequest customerResponse = new CustomerRequest();
             customerResponse.Name = customer.Name;
@@ -132,11 +178,13 @@ namespace cochesApi.Logic.Validations
             customerResponse.Age = customer.Age;
             customerResponse.Photo = customer.Photo;
             customerResponse.Email = customer.Email;
+            
+            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
 
             queriesCustomer.RemoveCustomer(customer);
             queriesDB.SaveChangesAsync();
 
-            return customerResponse;
+            return customerResponseValidation;
         }
         public string GetToken(CustomerLoginRequest customerLoginRequest)
         {

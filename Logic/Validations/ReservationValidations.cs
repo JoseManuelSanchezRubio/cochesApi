@@ -4,7 +4,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class ReservationValidation : ControllerBase, IReservation
+    public class ReservationResponseValidation
+    {
+        public ReservationResponse? ReservationResponse { get; set; }
+        public bool Status { get; set; }
+        public string? Message { get; set; }
+
+        public ReservationResponseValidation(ReservationResponse? reservationResponse)
+        {
+            ReservationResponse = ReservationResponse;
+            Status = true;
+            Message = "OK";
+        }
+    }
+    public class ReservationValidation : IReservation
     {
         private IDBQueries queriesDB;
         private IBranchQueries queriesBranch;
@@ -24,7 +37,7 @@ namespace cochesApi.Logic.Validations
             queriesCustomer = _queriesCustomer;
         }
 
-        public ActionResult<IEnumerable<ReservationResponse>> GetReservations()
+        public List<ReservationResponse> GetReservations()
         {
             var reservations = queriesReservation.GetReservations();
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
@@ -40,18 +53,23 @@ namespace cochesApi.Logic.Validations
                 reservationResponse.isInternational = reservation.isInternational;
                 reservationResponse.hasGPS = reservation.hasGPS;
                 reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
+                reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
                 reservationsList.Add(reservationResponse);
             }
             return reservationsList;
         }
-        public ActionResult<ReservationResponse> GetReservation(int id)
+        public ReservationResponseValidation GetReservation(int id)
         {
             var reservation = queriesReservation.GetReservation(id);
 
-            if (reservation == null) return Problem("Reservation does not exist");
+            if (reservation == null){
+                ReservationResponseValidation rrv = new ReservationResponseValidation(null);
+                rrv.Status = false;
+                rrv.Message = "Reservation not found";
+            }
 
             ReservationResponse reservationResponse = new ReservationResponse();
-            reservationResponse.Id = reservation.Id;
+            reservationResponse.Id = reservation!.Id;
             reservationResponse.BranchId = reservation.BranchId;
             reservationResponse.CarId = reservation.CarId;
             reservationResponse.CustomerId = reservation.CustomerId;
@@ -60,23 +78,33 @@ namespace cochesApi.Logic.Validations
             reservationResponse.isInternational = reservation.isInternational;
             reservationResponse.hasGPS = reservation.hasGPS;
             reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
+            reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
 
-            return reservationResponse;
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
+
+            return reservationResponseValidation;
         }
-        public ActionResult<ReservationResponse> PutReservation(int id, ReservationRequest reservationRequest)
+        public ReservationResponseValidation UpdateReservation(int id, ReservationRequest reservationRequest)
         {
             var reservation = queriesReservation.GetReservation(id);
 
-            if (reservation == null) return Problem("Reservation does not exist");
+            ReservationResponseValidation rrv = new ReservationResponseValidation(null);
+            if (reservation == null){
+                rrv.Status = false;
+                rrv.Message = "Reservation not found";
+            }
 
-            if (reservationRequest.numberOfDrivers > 3) return Problem("Number of drivers cannot be greater than 3");
+            if (reservationRequest.numberOfDrivers > 3){
+                rrv.Status = false;
+                rrv.Message = "Number of drivers must be less than 3";
+            }
 
-            queriesDB.Update(reservation);
+            queriesDB.Update(reservation!);
 
             queriesDB.SaveChangesAsync();
 
             ReservationResponse reservationResponse = new ReservationResponse();
-            reservationResponse.Id = reservation.Id;
+            reservationResponse.Id = reservation!.Id;
             reservationResponse.BranchId = reservation.BranchId;
             reservationResponse.CarId = reservation.CarId;
             reservationResponse.CustomerId = reservation.CustomerId;
@@ -85,32 +113,61 @@ namespace cochesApi.Logic.Validations
             reservationResponse.isInternational = reservation.isInternational;
             reservationResponse.hasGPS = reservation.hasGPS;
             reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
+            reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
 
-            return reservationResponse;
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
+
+            return reservationResponseValidation;
         }
 
-        public ActionResult<ReservationResponse> PostReservation(ReservationRequest reservationRequest)
+        public ReservationResponseValidation CreateReservation(ReservationRequest reservationRequest)
         {
             //Comprobaciones
             var typeCar = queriesTypeCar.GetTypeCar(reservationRequest.TypeCarId);
             var branch = queriesBranch.GetBranch(reservationRequest.BranchId);
             var customer = queriesCustomer.GetCustomer(reservationRequest.CustomerId);
 
-            if (reservationRequest.InitialDate > reservationRequest.FinalDate) return Problem("Initial date must be before final date");
+            ReservationResponseValidation rrv = new ReservationResponseValidation(null);
 
-            if (reservationRequest.numberOfDrivers > 3) return Problem("Number of drivers cannot be greater than 3");
+            if (reservationRequest.InitialDate > reservationRequest.FinalDate){
+                rrv.Status = false;
+                rrv.Message = "Initial Date must be less than Final Date";
+                return rrv;
+            }
 
-            if (typeCar?.Cars == null) return Problem("Type car does not exist");
+            if (reservationRequest.numberOfDrivers > 3){
+                rrv.Status = false;
+                rrv.Message = "Number of drivers must be less than 3";
+                return rrv;
+            }
 
-            if (branch == null) return Problem("Branch does not exist");
+            if (typeCar?.Cars == null){
+                rrv.Status = false;
+                rrv.Message = "TypeCar empty";
+                return rrv;
+            }
 
-            if (customer == null) return Problem("Customer does not exist");
+            if (branch == null){
+                rrv.Status = false;
+                rrv.Message = "Branch does not exist";
+                return rrv;
+            }
+
+            if (customer == null){
+                rrv.Status = false;
+                rrv.Message = "Customer does not exist";
+                return rrv;
+            }
 
             var plannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(reservationRequest.BranchId, reservationRequest.TypeCarId, reservationRequest.InitialDate, reservationRequest.FinalDate);
 
             foreach (Planning planning in plannings)
             {
-                if (planning.AvailableCars == 0) return Problem("No cars available");
+                if (planning.AvailableCars == 0){
+                    rrv.Status = false;
+                    rrv.Message = "Planning available cars is 0";
+                    return rrv;
+                }
             }
 
             var cars = (from c in typeCar.Cars
@@ -136,6 +193,7 @@ namespace cochesApi.Logic.Validations
             reservation.isInternational = reservationRequest.isInternational;
             reservation.hasGPS = reservationRequest.hasGPS;
             reservation.numberOfDrivers = reservationRequest.numberOfDrivers;
+            reservation.ReturnBranchId = reservationRequest.BranchId;
             reservation.Car = carToBook;
             reservation.Customer = customer;
             reservation.Branch = branch;
@@ -162,29 +220,61 @@ namespace cochesApi.Logic.Validations
             reservationResponse.isInternational = reservationRequest.isInternational;
             reservationResponse.hasGPS = reservationRequest.hasGPS;
             reservationResponse.numberOfDrivers = reservationRequest.numberOfDrivers;
+            reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
 
-            return reservationResponse;
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
+
+            return reservationResponseValidation;
         }
-        public ActionResult<ReservationResponse> PostReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch)
+        public ReservationResponseValidation CreateReservationOnDifferentBranch(ReservationRequestDifferentBranch reservationRequestDifferentBranch)
         {
             var typeCar = queriesTypeCar.GetTypeCar(reservationRequestDifferentBranch.TypeCarId);
             var pickUpBranch = queriesBranch.GetBranch(reservationRequestDifferentBranch.PickUpBranchId);
             var returnBranch = queriesBranch.GetBranch(reservationRequestDifferentBranch.ReturnBranchId);
             var customer = queriesCustomer.GetCustomer(reservationRequestDifferentBranch.CustomerId);
 
-            if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate) return Problem("Initial date must be before final date");
+            ReservationResponseValidation rrv = new ReservationResponseValidation(null);
 
-            if (reservationRequestDifferentBranch.numberOfDrivers > 3) return Problem("Number of drivers cannot be greater than 3");
+            if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate){
+                rrv.Status = false;
+                rrv.Message = "Initial Date must be less than Final Date";
+                return rrv;
+            }
 
-            if (typeCar?.Cars == null) return Problem("Type car does not exist");
+            if (reservationRequestDifferentBranch.numberOfDrivers > 3){
+                rrv.Status = false;
+                rrv.Message = "Number of drivers must be less than 3";
+                return rrv;
+            }
 
-            if (pickUpBranch == null) return Problem("Pick up branch does not exist");
+            if (typeCar?.Cars == null){
+                rrv.Status = false;
+                rrv.Message = "TypeCar empty";
+                return rrv;
+            }
 
-            if (returnBranch == null) return Problem("Return branch does not exist");
+            if (pickUpBranch == null){
+                rrv.Status = false;
+                rrv.Message = "PickUpBranch does not exist";
+                return rrv;
+            }
+            if (returnBranch == null){
+                rrv.Status = false;
+                rrv.Message = "ReturnBranch does not exist";
+                return rrv;
+            }
 
-            if (customer == null) return Problem("Customer does not exist");
+            if (customer == null){
+                rrv.Status = false;
+                rrv.Message = "Customer does not exist";
+                return rrv;
+            }
 
-            if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0) return Problem("No cars available");
+            if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0){
+                rrv.Status = false;
+                rrv.Message = "Planning available cars is 0";
+                return rrv;
+            }
 
             var cars = (from c in typeCar.Cars
                         where c.BranchId == reservationRequestDifferentBranch.PickUpBranchId
@@ -209,6 +299,7 @@ namespace cochesApi.Logic.Validations
             reservation.isInternational = reservationRequestDifferentBranch.isInternational;
             reservation.hasGPS = reservationRequestDifferentBranch.hasGPS;
             reservation.numberOfDrivers = reservationRequestDifferentBranch.numberOfDrivers;
+            reservation.ReturnBranchId = reservationRequestDifferentBranch.ReturnBranchId;
             reservation.Car = carToBook;
             reservation.Customer = customer;
             reservation.Branch = pickUpBranch;
@@ -229,9 +320,9 @@ namespace cochesApi.Logic.Validations
                 planning.AvailableCars--;
             }
 
-            var olderPlanningsReturnBranch = queriesPlanning.GetOlderPlanningsByBranchByTypeCarByDate(reservationRequestDifferentBranch.ReturnBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.FinalDate);
+            var newerPlanningsReturnBranch = queriesPlanning.GetOlderPlanningsByBranchByTypeCarByDate(reservationRequestDifferentBranch.ReturnBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.FinalDate);
 
-            foreach (Planning planning in olderPlanningsReturnBranch)
+            foreach (Planning planning in newerPlanningsReturnBranch)
             {
                 planning.AvailableCars++;
             }
@@ -247,14 +338,22 @@ namespace cochesApi.Logic.Validations
             reservationResponse.isInternational = reservationRequestDifferentBranch.isInternational;
             reservationResponse.hasGPS = reservationRequestDifferentBranch.hasGPS;
             reservationResponse.numberOfDrivers = reservationRequestDifferentBranch.numberOfDrivers;
+            reservationResponse.ReturnBranchId = reservationRequestDifferentBranch.ReturnBranchId;
 
-            return reservationResponse;
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
+
+            return reservationResponseValidation;
         }
-        public ActionResult<ReservationResponse> DeleteReservation(int id)
+        public ReservationResponseValidation DeleteReservation(int id)
         {
             var reservation = queriesReservation.GetReservation(id);
 
-            if (reservation == null) return Problem("Reservation not found");
+            if (reservation == null){
+                ReservationResponseValidation rrv = new ReservationResponseValidation(null);
+                rrv.Status = false;
+                rrv.Message = "Reservation does not exist";
+                return rrv;
+            }
 
             ReservationResponse reservationResponse = new ReservationResponse();
             reservationResponse.CustomerId = reservation.CustomerId;
@@ -266,18 +365,21 @@ namespace cochesApi.Logic.Validations
             reservationResponse.isInternational = reservation.isInternational;
             reservationResponse.hasGPS = reservation.hasGPS;
             reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
+            reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
+
+            ReservationResponseValidation reservationResponseValidation = new ReservationResponseValidation(reservationResponse);
 
             queriesReservation.RemoveReservation(reservation);
             queriesDB.SaveChangesAsync();
 
-            return reservationResponse;
+            return reservationResponseValidation;
         }
-        public ActionResult<List<ReservationResponse>> GetReservationsByBranch(int id)
+        public List<ReservationResponse> GetReservationsByBranch(int id)
         {
             var reservations = queriesReservation.GetReservations();
             var branch = queriesBranch.GetBranch(id);
 
-            if (branch == null) return Problem("Branch does not exist");
+            if (branch == null) return null!;
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
             foreach (Reservation reservation in reservations)
@@ -294,18 +396,19 @@ namespace cochesApi.Logic.Validations
                     reservationResponse.isInternational = reservation.isInternational;
                     reservationResponse.hasGPS = reservation.hasGPS;
                     reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
+                    reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
 
                     reservationsList.Add(reservationResponse);
                 }
             }
             return reservationsList;
         }
-        public ActionResult<List<ReservationResponse>> GetReservationsByCar(int id)
+        public List<ReservationResponse> GetReservationsByCar(int id)
         {
             var reservations = queriesReservation.GetReservations();
             var car = queriesCar.GetCar(id);
 
-            if (car == null) return Problem("Car does not exist");
+            if (car == null) return null!;
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
             foreach (Reservation reservation in reservations)
@@ -322,18 +425,19 @@ namespace cochesApi.Logic.Validations
                     reservationResponse.isInternational = reservation.isInternational;
                     reservationResponse.hasGPS = reservation.hasGPS;
                     reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
+                    reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
 
                     reservationsList.Add(reservationResponse);
                 }
             }
             return reservationsList;
         }
-        public ActionResult<List<ReservationResponse>> GetReservationsByCustomer(int id)
+        public List<ReservationResponse> GetReservationsByCustomer(int id)
         {
             var reservations = queriesReservation.GetReservations();
             var customer = queriesCustomer.GetCustomer(id);
 
-            if (customer == null) return Problem("Customer does not exist");
+            if (customer == null) return null!;
 
             List<ReservationResponse> reservationsList = new List<ReservationResponse>();
             foreach (Reservation reservation in reservations)
@@ -350,13 +454,14 @@ namespace cochesApi.Logic.Validations
                     reservationResponse.isInternational = reservation.isInternational;
                     reservationResponse.hasGPS = reservation.hasGPS;
                     reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
+                    reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
 
                     reservationsList.Add(reservationResponse);
                 }
             }
             return reservationsList;
         }
-        public ActionResult<List<ReservationResponse>> GetReservationsByDate(DateTime date)
+        public List<ReservationResponse> GetReservationsByDate(DateTime date)
         {
             var reservations = queriesReservation.GetReservations();
 
@@ -375,6 +480,7 @@ namespace cochesApi.Logic.Validations
                     reservationResponse.isInternational = reservation.isInternational;
                     reservationResponse.hasGPS = reservation.hasGPS;
                     reservationResponse.numberOfDrivers = reservation.numberOfDrivers;
+                    reservationResponse.ReturnBranchId = reservation.ReturnBranchId;
 
                     reservationsList.Add(reservationResponse);
                 }

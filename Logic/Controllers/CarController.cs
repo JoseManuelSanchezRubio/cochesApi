@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using cochesApi.Logic.Models;
 using cochesApi.Logic.Interfaces;
+using cochesApi.Logic.Validations;
 
 namespace cochesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarController : ControllerBase
+    public class CarController
     {
         private ICar carValidation;
         public CarController(ICar _car)
@@ -15,53 +16,49 @@ namespace cochesApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CarResponse>> GetCars()
+        public IEnumerable<CarResponse> GetCars()
         {
             return carValidation.GetCars();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<CarResponse> GetCar(int id)
+        public CarResponseValidation GetCar(int id)
         {
             return carValidation.GetCar(id);
         }
         [HttpGet("branch/{id}")]
-        public ActionResult<List<CarResponse>> GetCarsByBranch(int id)
+        public List<CarResponse> GetCarsByBranch(int id)
         {
-            if (carValidation.GetCarsByBranch(id) == null) return Problem("Branch does not exist");
-
             return carValidation.GetCarsByBranch(id);
         }
 
         [HttpGet("typeCar/{id}")]
-        public ActionResult<List<CarResponse>> GetCarsByTypeCar(int id)
+        public List<CarResponse> GetCarsByTypeCar(int id)
         {
-            if (carValidation.GetCarsByTypeCar(id) == null) return Problem("TypeCar does not exist");
-
             return carValidation.GetCarsByTypeCar(id);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<CarResponse> PutCar(int id, CarRequest carRequest)
+        public CarResponseValidation PutCar(int id, CarRequest carRequest)
         {
-            return carValidation.PutCar(id, carRequest);
+            return carValidation.UpdateCar(id, carRequest);
         }
 
         [HttpPost]
-        public ActionResult<CarResponse> PostCar(CarRequest carRequest)
+        public CarResponseValidation PostCar(CarRequest carRequest)
         {
-            return carValidation.PostCar(carRequest);
+            return carValidation.CreateCar(carRequest);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<CarResponse> DeleteCar(int id)
+        public CarResponseValidation DeleteCar(int id)
         {
             return carValidation.DeleteCar(id);
         }
 
 
         [HttpGet("availability/{branchId}/{initialDate}/{finalDate}")]
-        public ActionResult<List<CarResponse>> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
+        public List<CarResponse> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
         {
             return carValidation.GetAvailableCarsByBranchAndDate(branchId, initialDate, finalDate);
         }

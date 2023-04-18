@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using cochesApi.Logic.Models;
 using cochesApi.Logic.Interfaces;
+using cochesApi.Logic.Validations;
 
 namespace cochesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController
     {
         private readonly IConfiguration _configuration;
         private ICustomer customerValidation;
@@ -17,31 +18,31 @@ namespace cochesApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CustomerRequest>> GetCustomers()
+        public IEnumerable<CustomerRequest> GetCustomers()
         {
             return customerValidation.GetCustomers();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<CustomerRequest> GetCustomer(int id)
+        public CustomerResponseValidation GetCustomer(int id)
         {
             return customerValidation.GetCustomer(id);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<CustomerRequest> PutCustomer(int id, CustomerRequest customerRequest)
+        public CustomerResponseValidation PutCustomer(int id, CustomerRequest customerRequest)
         {
-            return customerValidation.PutCustomer(id, customerRequest);
+            return customerValidation.UpdateCustomer(id, customerRequest);
         }
 
         [HttpPost]
-        public ActionResult<CustomerRequest> PostCustomer(CustomerRequest customerRequest)
+        public CustomerResponseValidation PostCustomer(CustomerRequest customerRequest)
         {
-            return customerValidation.PostCustomer(customerRequest);
+            return customerValidation.CreateCustomer(customerRequest);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<CustomerRequest> DeleteCustomer(int id)
+        public CustomerResponseValidation DeleteCustomer(int id)
         {
             return customerValidation.DeleteCustomer(id);
         }

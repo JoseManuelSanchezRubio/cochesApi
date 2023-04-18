@@ -1,15 +1,16 @@
 using cochesApi.Logic.Models;
 using Microsoft.AspNetCore.Mvc;
+using cochesApi.Logic.Validations;
 
 namespace cochesApi.Logic.Interfaces
 {
     public interface ICustomer
     {
-        ActionResult<IEnumerable<CustomerRequest>> GetCustomers();
-        ActionResult<CustomerRequest> GetCustomer(int id);
-        ActionResult<CustomerRequest> PutCustomer(int id, CustomerRequest customerRequest);
-        ActionResult<CustomerRequest> PostCustomer(CustomerRequest customerRequest);
-        ActionResult<CustomerRequest> DeleteCustomer(int id);
+        List<CustomerRequest> GetCustomers();
+        CustomerResponseValidation GetCustomer(int id);
+        CustomerResponseValidation UpdateCustomer(int id, CustomerRequest customerRequest);
+        CustomerResponseValidation CreateCustomer(CustomerRequest customerRequest);
+        CustomerResponseValidation DeleteCustomer(int id);
         string GetToken(CustomerLoginRequest customerLoginRequest);
     }
 }

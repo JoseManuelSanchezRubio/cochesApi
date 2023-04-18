@@ -4,7 +4,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class TypeCarValidation : ControllerBase, ITypeCar
+    public class TypeCarResponseValidation
+    {
+        public TypeCarRequest? TypeCarResponse { get; set; }
+        public bool Status { get; set; }
+        public string? Message { get; set; }
+
+        public TypeCarResponseValidation(TypeCarRequest? typeCarResponse)
+        {
+            TypeCarResponse = typeCarResponse;
+            Status = true;
+            Message = "OK";
+        }
+    }
+    public class TypeCarValidation : ITypeCar
     {
         private IDBQueries queriesDB;
         private ITypeCarQueries queriesTypeCar;
@@ -14,7 +27,7 @@ namespace cochesApi.Logic.Validations
             queriesDB = _queries;
         }
 
-        public ActionResult<IEnumerable<TypeCarRequest>> GetTypeCars()
+        public List<TypeCarRequest> GetTypeCars()
         {
             var types = queriesTypeCar.GetTypeCars();
             List<TypeCarRequest> typesRequest = new List<TypeCarRequest>();
@@ -25,57 +38,74 @@ namespace cochesApi.Logic.Validations
             }
             return typesRequest;
         }
-        public ActionResult<TypeCarRequest> GetTypeCar(int id)
+        public TypeCarResponseValidation GetTypeCar(int id)
         {
             var typeCar = queriesTypeCar.GetTypeCar(id)!;
 
-            if (typeCar == null) return Problem("TypeCar does not exist");
+            if (typeCar == null){
+                TypeCarResponseValidation trv = new TypeCarResponseValidation(null);
+                trv.Status = false;
+                trv.Message = "TypeCar does not exist";
+            }
 
-            TypeCarRequest typeCarRequest = new TypeCarRequest(typeCar.Name!);
+            TypeCarRequest typeCarRequest = new TypeCarRequest(typeCar!.Name!);
 
-            return typeCarRequest;
+            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarRequest);
+
+            return typeCarResponseValidation;
         }
 
-        public ActionResult<TypeCarRequest> PutTypeCar(int id, TypeCarRequest typeCarRequest)
+        public TypeCarResponseValidation UpdateTypeCar(int id, TypeCarRequest typeCarRequest)
         {
             var typeCar = queriesTypeCar.GetTypeCar(id);
 
-            if (typeCar == null) return Problem("TypeCar does not exist");
+            if (typeCar == null){
+                TypeCarResponseValidation trv = new TypeCarResponseValidation(null);
+                trv.Status = false;
+                trv.Message = "TypeCar does not exist";
+                return trv;
+            }
 
             typeCar.Name = typeCarRequest.Name;
 
             TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
 
+            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
+
             queriesDB.Update(typeCar);
 
             queriesDB.SaveChangesAsync();
 
-            return typeCarResponse;
+            return typeCarResponseValidation;
         }
-        public ActionResult<TypeCarRequest> PostTypeCar(TypeCarRequest typeCarRequest)
+        public TypeCarResponseValidation CreateTypeCar(TypeCarRequest typeCarRequest)
         {
             TypeCar typeCar = new TypeCar();
             typeCar.Name = typeCarRequest.Name;
 
             TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
 
+            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
+
             queriesTypeCar.AddTypeCar(typeCar);
             queriesDB.SaveChangesAsync();
 
-            return typeCarResponse;
+            return typeCarResponseValidation;
         }
-        public ActionResult<TypeCarRequest> DeleteTypeCar(int id)
+        public TypeCarResponseValidation DeleteTypeCar(int id)
         {
             var typeCar = queriesTypeCar.GetTypeCar(id);
 
-            if (typeCar == null) return Problem("TypeCar does not exist");
+            if (typeCar == null) return null!;
 
             TypeCarRequest typeCarResponse = new TypeCarRequest(typeCar.Name!);
+
+            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 
             queriesTypeCar.RemoveTypeCar(typeCar);
             queriesDB.SaveChangesAsync();
 
-            return typeCarResponse;
+            return typeCarResponseValidation;
         }
     }
 }

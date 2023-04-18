@@ -4,7 +4,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cochesApi.Logic.Validations
 {
-    public class BranchValidation : ControllerBase, IBranch
+    public class BranchResponseValidation
+    {
+        public BranchRequest? BranchResponse { get; set; }
+        public bool Status { get; set; }
+        public string? Message { get; set; }
+
+        public BranchResponseValidation(BranchRequest? branchResponse)
+        {
+            BranchResponse = branchResponse;
+            Status = true;
+            Message = "OK";
+        }
+    }
+    public class BranchValidation : IBranch
     {
         private IBranchQueries queriesBranch;
         private IPlanningQueries queriesPlanning;
@@ -18,7 +31,7 @@ namespace cochesApi.Logic.Validations
             queriesTypeCar = _queriesTypeCar;
             queriesDB = _queries;
         }
-        public ActionResult<IEnumerable<BranchRequest>> GetBranches()
+        public List<BranchRequest> GetBranches()
         {
             var branches = queriesBranch.GetBranches();
             List<BranchRequest> branchesRequest = new List<BranchRequest>();
@@ -31,37 +44,44 @@ namespace cochesApi.Logic.Validations
             }
             return branchesRequest;
         }
-        public ActionResult<BranchRequest> GetBranch(int id)
+        public BranchResponseValidation GetBranch(int id)
         {
             var branch = queriesBranch.GetBranch(id);
-            if (branch == null) return NotFound("Branch does not exist");
+            if (branch == null)
+            {
+                BranchResponseValidation brv = new BranchResponseValidation(null);
+                brv.Status = false;
+                brv.Message = "Branch not found";
+            }
             BranchRequest branchRequest = new BranchRequest();
-            branchRequest.Name = branch.Name;
-            branchRequest.Location = branch.Location;
+            branchRequest.Name = branch?.Name;
+            branchRequest.Location = branch?.Location;
+            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchRequest);
 
-            return branchRequest;
+            return branchResponseValidation;
         }
-        public ActionResult<BranchRequest> PutBranch(int id, BranchRequest branchRequest)
+        public BranchResponseValidation UpdateBranch(int id, BranchRequest branchRequest)
         {
             var branch = queriesBranch.GetBranch(id);
+            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(null); // Cambiar en un futuro
 
-            if (branch == null) return Problem("Branch does not exist");
-
+            if (branch == null)
+            {
+                branchResponseValidation.Status = false;
+                branchResponseValidation.Message = "Branch does not exist";
+                return branchResponseValidation;
+            }
             branch.Name = branchRequest.Name;
             branch.Location = branchRequest.Location;
-
-            BranchRequest branchResponse = new BranchRequest();
-            branchResponse.Name = branchRequest.Name;
-            branchResponse.Location = branchRequest.Location;
 
             queriesDB.Update(branch);
 
             queriesDB.SaveChangesAsync();
 
-            return branchResponse;
+            return branchResponseValidation;
 
         }
-        public ActionResult<BranchRequest> PostBranch(BranchRequest branchRequest)
+        public BranchResponseValidation CreateBranch(BranchRequest branchRequest)
         {
             List<TypeCar> typeCars = queriesTypeCar.GetTypeCars();
             Branch branch = new Branch();
@@ -71,7 +91,9 @@ namespace cochesApi.Logic.Validations
             queriesBranch.AddBranch(branch);
             queriesDB.SaveChangesAsync();
 
+
             var branchh = queriesBranch.GetBranch(branch.Id); //esto es para poder coger el id del branch
+
 
             for (int i = 0; i < 365; i++)
             {
@@ -95,17 +117,21 @@ namespace cochesApi.Logic.Validations
             branchResponse.Name = branchRequest.Name;
             branchResponse.Location = branchRequest.Location;
 
-            return branchResponse;
+            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchResponse);
+
+            return branchResponseValidation;
         }
-        public ActionResult<BranchRequest> DeleteBranch(int id)
+        public BranchResponseValidation DeleteBranch(int id)
         {
             var branch = queriesBranch.GetBranch(id);
+            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(null); // Cambiar en un futuro
 
-            if (branch == null) return NotFound("Branch does not exist");
-
-            BranchRequest branchResponse = new BranchRequest();
-            branchResponse.Name = branch.Name;
-            branchResponse.Location = branch.Location;
+            if (branch == null)
+            {
+                branchResponseValidation.Status = false;
+                branchResponseValidation.Message = "Branch does not exist";
+                return branchResponseValidation;
+            }
 
             queriesBranch.RemoveBranch(branch);
             var plannings = queriesPlanning.GetPlannings();
@@ -118,7 +144,7 @@ namespace cochesApi.Logic.Validations
             }
             queriesDB.SaveChangesAsync();
 
-            return branchResponse;
+            return branchResponseValidation;
         }
     }
 }
