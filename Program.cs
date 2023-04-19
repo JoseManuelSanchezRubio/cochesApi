@@ -21,14 +21,16 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 builder.Services.AddDbContext<myAppContext>(opt =>
     opt.UseLazyLoadingProxies()
-    .UseSqlite(builder.Configuration.GetConnectionString("cochesApi")?? throw new InvalidOperationException("Connection string 'cochesApi' not found.")));
+    .UseSqlite(builder.Configuration.GetConnectionString("cochesApi") ?? throw new InvalidOperationException("Connection string 'cochesApi' not found.")));
 
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>{
-    options.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme{
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
         Name = "Authorization",
         Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
@@ -37,15 +39,17 @@ builder.Services.AddSwaggerGen(options =>{
 });
 
 /* builder.Services.AddAuthentication().AddJwtBearer(); */
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>{
-    options.TokenValidationParameters=new Microsoft.IdentityModel.Tokens.TokenValidationParameters{
-        ValidateIssuer=true,
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer="http://localhost:5218/",
-        ValidAudience="http://localhost:5218/",
-        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SecretPassword.1234"))
+        ValidIssuer = "http://localhost:5218/",
+        ValidAudience = "http://localhost:5218/",
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SecretPassword.1234"))
     };
     builder.Configuration.Bind("JwtBearer", options);
 });

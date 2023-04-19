@@ -6,11 +6,11 @@ namespace cochesApi.Logic.Validations
 {
     public class BranchResponseValidation
     {
-        public BranchRequest? BranchResponse { get; set; }
+        public BranchResponse? BranchResponse { get; set; }
         public bool Status { get; set; }
         public string? Message { get; set; }
 
-        public BranchResponseValidation(BranchRequest? branchResponse)
+        public BranchResponseValidation(BranchResponse? branchResponse)
         {
             BranchResponse = branchResponse;
             Status = true;
@@ -53,10 +53,11 @@ namespace cochesApi.Logic.Validations
                 brv.Status = false;
                 brv.Message = "Branch not found";
             }
-            BranchRequest branchRequest = new BranchRequest();
-            branchRequest.Name = branch?.Name;
-            branchRequest.Location = branch?.Location;
-            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchRequest);
+            BranchResponse branchResponse = new BranchResponse();
+            branchResponse.Id = branch!.Id;
+            branchResponse.Name = branch?.Name;
+            branchResponse.Location = branch?.Location;
+            BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchResponse);
 
             return branchResponseValidation;
         }
@@ -113,10 +114,10 @@ namespace cochesApi.Logic.Validations
 
             queriesDB.SaveChangesAsync();
 
-            BranchRequest branchResponse = new BranchRequest();
-            branchResponse.Name = branchRequest.Name;
-            branchResponse.Location = branchRequest.Location;
-
+            BranchResponse branchResponse = new BranchResponse();
+            branchResponse.Id = branch.Id;
+            branchResponse.Name = branch?.Name;
+            branchResponse.Location = branch?.Location;
             BranchResponseValidation branchResponseValidation = new BranchResponseValidation(branchResponse);
 
             return branchResponseValidation;

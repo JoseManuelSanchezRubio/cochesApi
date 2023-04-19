@@ -10,11 +10,11 @@ namespace cochesApi.Logic.Validations
 {
     public class CustomerResponseValidation
     {
-        public CustomerRequest? CustomerResponse { get; set; }
+        public CustomerResponse? CustomerResponse { get; set; }
         public bool Status { get; set; }
         public string? Message { get; set; }
 
-        public CustomerResponseValidation(CustomerRequest? customerResponse)
+        public CustomerResponseValidation(CustomerResponse? customerResponse)
         {
             CustomerResponse = customerResponse;
             Status = true;
@@ -53,21 +53,23 @@ namespace cochesApi.Logic.Validations
         {
             var customer = queriesCustomer.GetCustomer(id)!;
 
-            if (customer == null) {
+            if (customer == null)
+            {
                 CustomerResponseValidation crv = new CustomerResponseValidation(null);
                 crv.Status = false;
                 crv.Message = "Customer not found";
                 return crv;
             }
 
-            CustomerRequest customerRequest = new CustomerRequest();
-            customerRequest.Name = customer.Name;
-            customerRequest.Surname = customer.Surname;
-            customerRequest.Age = customer.Age;
-            customerRequest.Photo = customer.Photo;
-            customerRequest.Email = customer.Email;
+            CustomerResponse customerResponse = new CustomerResponse();
+            customerResponse.Id = customer.Id;
+            customerResponse.Name = customer.Name;
+            customerResponse.Surname = customer.Surname;
+            customerResponse.Age = customer.Age;
+            customerResponse.Photo = customer.Photo;
+            customerResponse.Email = customer.Email;
 
-            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerRequest);
+            CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
 
             return customerResponseValidation;
         }
@@ -84,7 +86,8 @@ namespace cochesApi.Logic.Validations
             }
             CustomerResponseValidation crv = new CustomerResponseValidation(null);
 
-            if (!ageOk){
+            if (!ageOk)
+            {
                 crv.Status = false;
                 crv.Message = "Invalid Age";
                 return crv;
@@ -92,7 +95,8 @@ namespace cochesApi.Logic.Validations
 
             var customer = queriesCustomer.GetCustomer(id);
 
-            if (customer == null){
+            if (customer == null)
+            {
                 crv.Status = false;
                 crv.Message = "Customer not found";
                 return crv;
@@ -104,7 +108,8 @@ namespace cochesApi.Logic.Validations
             customer.Photo = customerRequest.Photo;
             customer.Email = customerRequest.Email;
 
-            CustomerRequest customerResponse = new CustomerRequest();
+            CustomerResponse customerResponse = new CustomerResponse();
+            customerResponse.Id = customer.Id;
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
             customerResponse.Age = customer.Age;
@@ -133,7 +138,8 @@ namespace cochesApi.Logic.Validations
             }
             CustomerResponseValidation crv = new CustomerResponseValidation(null);
 
-            if (!ageOk){
+            if (!ageOk)
+            {
                 crv.Status = false;
                 crv.Message = "Invalid Age";
                 return crv;
@@ -147,7 +153,8 @@ namespace cochesApi.Logic.Validations
             customer.Email = customerRequest.Email;
             customer.Password = BCrypt.Net.BCrypt.HashPassword(customerRequest.Password);
 
-            CustomerRequest customerResponse = new CustomerRequest();
+            CustomerResponse customerResponse = new CustomerResponse();
+            customerResponse.Id = customer.Id;
             customerResponse.Name = customerRequest.Name;
             customerResponse.Surname = customerRequest.Surname;
             customerResponse.Age = customerRequest.Age;
@@ -165,20 +172,22 @@ namespace cochesApi.Logic.Validations
         {
             var customer = queriesCustomer.GetCustomer(id);
 
-            if (customer == null){
+            if (customer == null)
+            {
                 CustomerResponseValidation crv = new CustomerResponseValidation(null);
                 crv.Status = false;
                 crv.Message = "Customer not found";
                 return crv;
             }
 
-            CustomerRequest customerResponse = new CustomerRequest();
+            CustomerResponse customerResponse = new CustomerResponse();
+            customerResponse.Id = customer.Id;
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
             customerResponse.Age = customer.Age;
             customerResponse.Photo = customer.Photo;
             customerResponse.Email = customer.Email;
-            
+
             CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
 
             queriesCustomer.RemoveCustomer(customer);

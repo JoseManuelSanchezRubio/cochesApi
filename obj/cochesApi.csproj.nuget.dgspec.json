@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\JSANCHEZ\\Desktop\\jm\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj": {}
+    "C:\\Users\\JSANCHEZ\\Desktop\\jm\\Back\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\JSANCHEZ\\Desktop\\jm\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj": {
+    "C:\\Users\\JSANCHEZ\\Desktop\\jm\\Back\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\JSANCHEZ\\Desktop\\jm\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj",
+        "projectUniqueName": "C:\\Users\\JSANCHEZ\\Desktop\\jm\\Back\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj",
         "projectName": "cochesApi",
-        "projectPath": "C:\\Users\\JSANCHEZ\\Desktop\\jm\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj",
+        "projectPath": "C:\\Users\\JSANCHEZ\\Desktop\\jm\\Back\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj",
         "packagesPath": "C:\\Users\\JSANCHEZ\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\JSANCHEZ\\Desktop\\jm\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\obj\\",
+        "outputPath": "C:\\Users\\JSANCHEZ\\Desktop\\jm\\Back\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\JSANCHEZ\\AppData\\Roaming\\NuGet\\NuGet.Config"

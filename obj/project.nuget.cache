@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "z38Vl194hR7/XiUVNW4lnU1tJUIkhFkuC+yoQoHDSGRwA5Tqne7EG/rI8BCXLQIXcyWCte1+dXtC8omGADvZxw==",
+  "dgSpecHash": "ad5dWIH3WvjcZviWoW8n3HvWCfZr04lvty0uQGhzNj6BtoE3vN0VskrDk/8YKGF6JxraDoLKrtwK5cokKIBZ8g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\JSANCHEZ\\Desktop\\jm\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj",
+  "projectFilePath": "C:\\Users\\JSANCHEZ\\Desktop\\jm\\Back\\cochesApi - nLayers - dependency - bueno - definitivo - controllerBueno\\cochesApi\\cochesApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\JSANCHEZ\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\JSANCHEZ\\.nuget\\packages\\castle.core\\5.1.0\\castle.core.5.1.0.nupkg.sha512",
