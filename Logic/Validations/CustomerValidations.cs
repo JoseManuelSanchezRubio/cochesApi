@@ -33,21 +33,22 @@ namespace cochesApi.Logic.Validations
             queriesDB = _queries;
             queriesCustomer = _queriesCustomer;
         }
-        public List<CustomerRequest> GetCustomers()
+        public List<CustomerResponse> GetCustomers()
         {
             var customers = queriesCustomer.GetCustomers();
-            List<CustomerRequest> customersRequest = new List<CustomerRequest>();
+            List<CustomerResponse> customersResponse = new List<CustomerResponse>();
             foreach (Customer customer in customers)
             {
-                CustomerRequest customerRequest = new CustomerRequest();
-                customerRequest.Name = customer.Name;
-                customerRequest.Surname = customer.Surname;
-                customerRequest.Age = customer.Age;
-                customerRequest.Photo = customer.Photo;
-                customerRequest.Email = customer.Email;
-                customersRequest.Add(customerRequest);
+                CustomerResponse customerResponse = new CustomerResponse();
+                customerResponse.Id = customer.Id;
+                customerResponse.Name = customer.Name;
+                customerResponse.Surname = customer.Surname;
+                customerResponse.Age = customer.Age;
+                customerResponse.Photo = customer.Photo;
+                customerResponse.Email = customer.Email;
+                customersResponse.Add(customerResponse);
             }
-            return customersRequest;
+            return customersResponse;
         }
         public CustomerResponseValidation GetCustomer(int id)
         {

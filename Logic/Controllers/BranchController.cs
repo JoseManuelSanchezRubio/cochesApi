@@ -16,7 +16,7 @@ namespace cochesApi.Logic.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<BranchRequest> GetBranches()
+        public IEnumerable<BranchResponse> GetBranches()
         {
             return branchValidation.GetBranches();
         }
@@ -26,13 +26,13 @@ namespace cochesApi.Logic.Controllers
         {
             return branchValidation.GetBranch(id);
         }
-        
+
         [HttpPut("{id}")]
         public BranchResponseValidation PutBranch(int id, BranchRequest branchRequest)
         {
             return branchValidation.UpdateBranch(id, branchRequest);
         }
-        
+
         [HttpPost]
         public BranchResponseValidation PostBranch(BranchRequest branchRequest)
         {

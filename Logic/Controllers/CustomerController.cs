@@ -18,7 +18,7 @@ namespace cochesApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<CustomerRequest> GetCustomers()
+        public IEnumerable<CustomerResponse> GetCustomers()
         {
             return customerValidation.GetCustomers();
         }

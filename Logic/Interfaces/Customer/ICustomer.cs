@@ -6,7 +6,7 @@ namespace cochesApi.Logic.Interfaces
 {
     public interface ICustomer
     {
-        List<CustomerRequest> GetCustomers();
+        List<CustomerResponse> GetCustomers();
         CustomerResponseValidation GetCustomer(int id);
         CustomerResponseValidation UpdateCustomer(int id, CustomerRequest customerRequest);
         CustomerResponseValidation CreateCustomer(CustomerRequest customerRequest);

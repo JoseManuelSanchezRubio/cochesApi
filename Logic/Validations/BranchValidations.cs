@@ -31,18 +31,19 @@ namespace cochesApi.Logic.Validations
             queriesTypeCar = _queriesTypeCar;
             queriesDB = _queries;
         }
-        public List<BranchRequest> GetBranches()
+        public List<BranchResponse> GetBranches()
         {
             var branches = queriesBranch.GetBranches();
-            List<BranchRequest> branchesRequest = new List<BranchRequest>();
+            List<BranchResponse> branchesResponse = new List<BranchResponse>();
             foreach (Branch branch in branches)
             {
-                BranchRequest branchRequest = new BranchRequest();
-                branchRequest.Name = branch.Name;
-                branchRequest.Location = branch.Location;
-                branchesRequest.Add(branchRequest);
+                BranchResponse branchResponse = new BranchResponse();
+                branchResponse.Id = branch.Id;
+                branchResponse.Name = branch.Name;
+                branchResponse.Location = branch.Location;
+                branchesResponse.Add(branchResponse);
             }
-            return branchesRequest;
+            return branchesResponse;
         }
         public BranchResponseValidation GetBranch(int id)
         {

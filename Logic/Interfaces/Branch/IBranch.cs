@@ -7,7 +7,7 @@ namespace cochesApi.Logic.Interfaces
 {
     public interface IBranch
     {
-        List<BranchRequest> GetBranches();
+        List<BranchResponse> GetBranches();
         BranchResponseValidation GetBranch(int id);
         BranchResponseValidation UpdateBranch(int id, BranchRequest branchRequest);
         BranchResponseValidation CreateBranch(BranchRequest branchRequest);
