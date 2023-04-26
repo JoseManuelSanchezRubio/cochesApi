@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using cochesApi.Logic.Models;
 using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Validations;
+using Microsoft.AspNetCore.Cors;
 
 namespace cochesApi.Logic.Controllers
 {
@@ -16,6 +17,7 @@ namespace cochesApi.Logic.Controllers
         }
 
         [HttpGet]
+        [DisableCors]
         public IEnumerable<BranchResponse> GetBranches()
         {
             return branchValidation.GetBranches();

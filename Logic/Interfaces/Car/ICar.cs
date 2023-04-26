@@ -13,6 +13,6 @@ namespace cochesApi.Logic.Interfaces
         CarResponseValidation DeleteCar(int id);
         List<CarResponse> GetCarsByBranch(int id);
         List<CarResponse> GetCarsByTypeCar(int id);
-        List<CarResponse> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate);
+        List<int> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate);
     }
 }

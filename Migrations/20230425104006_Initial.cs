@@ -33,6 +33,7 @@ namespace cochesApi.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Surname = table.Column<string>(type: "TEXT", nullable: true),
+                    Age = table.Column<string>(type: "TEXT", nullable: true),
                     Email = table.Column<string>(type: "TEXT", nullable: true),
                     Password = table.Column<string>(type: "TEXT", nullable: true)
                 },
@@ -76,8 +77,10 @@ namespace cochesApi.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Model = table.Column<string>(type: "TEXT", nullable: true),
                     Brand = table.Column<string>(type: "TEXT", nullable: true),
+                    Model = table.Column<string>(type: "TEXT", nullable: true),
+                    isAutomatic = table.Column<bool>(type: "INTEGER", nullable: false),
+                    isGasoline = table.Column<bool>(type: "INTEGER", nullable: false),
                     BranchId = table.Column<int>(type: "INTEGER", nullable: false),
                     TypeCarId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -106,6 +109,10 @@ namespace cochesApi.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     InitialDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     FinalDate = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ReturnBranchId = table.Column<int>(type: "INTEGER", nullable: false),
+                    isInternational = table.Column<bool>(type: "INTEGER", nullable: false),
+                    hasGPS = table.Column<bool>(type: "INTEGER", nullable: false),
+                    numberOfDrivers = table.Column<int>(type: "INTEGER", nullable: false),
                     CarId = table.Column<int>(type: "INTEGER", nullable: false),
                     CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
                     BranchId = table.Column<int>(type: "INTEGER", nullable: false)

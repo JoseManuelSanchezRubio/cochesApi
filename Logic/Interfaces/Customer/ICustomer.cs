@@ -11,6 +11,6 @@ namespace cochesApi.Logic.Interfaces
         CustomerResponseValidation UpdateCustomer(int id, CustomerRequest customerRequest);
         CustomerResponseValidation CreateCustomer(CustomerRequest customerRequest);
         CustomerResponseValidation DeleteCustomer(int id);
-        string GetToken(CustomerLoginRequest customerLoginRequest);
+        TokenResponse GetToken(CustomerLoginRequest customerLoginRequest);
     }
 }

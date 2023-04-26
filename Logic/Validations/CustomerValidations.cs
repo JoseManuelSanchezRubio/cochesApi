@@ -5,6 +5,7 @@ using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Models;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace cochesApi.Logic.Validations
 {
@@ -19,6 +20,18 @@ namespace cochesApi.Logic.Validations
             CustomerResponse = customerResponse;
             Status = true;
             Message = "OK";
+        }
+    }
+    public class TokenResponse
+    {
+        public string Token { get; set; }
+        public CustomerResponse Customer { get; set; }
+        public bool Status { get; set; }
+        public TokenResponse(string token, CustomerResponse customer, bool status)
+        {
+            Token = token;
+            Customer = customer;
+            Status = status;
         }
     }
     public class CustomerValidation : ICustomer
@@ -44,7 +57,7 @@ namespace cochesApi.Logic.Validations
                 customerResponse.Name = customer.Name;
                 customerResponse.Surname = customer.Surname;
                 customerResponse.Age = customer.Age;
-                customerResponse.Photo = customer.Photo;
+
                 customerResponse.Email = customer.Email;
                 customersResponse.Add(customerResponse);
             }
@@ -67,7 +80,7 @@ namespace cochesApi.Logic.Validations
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
             customerResponse.Age = customer.Age;
-            customerResponse.Photo = customer.Photo;
+
             customerResponse.Email = customer.Email;
 
             CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
@@ -76,23 +89,9 @@ namespace cochesApi.Logic.Validations
         }
         public CustomerResponseValidation UpdateCustomer(int id, CustomerRequest customerRequest)
         {
-            bool ageOk = false;
-            var ages = Enum.GetValues(typeof(CustomerAge));
-            foreach (CustomerAge age in ages)
-            {
-                if (customerRequest.Age == age)
-                {
-                    ageOk = true;
-                }
-            }
+
             CustomerResponseValidation crv = new CustomerResponseValidation(null);
 
-            if (!ageOk)
-            {
-                crv.Status = false;
-                crv.Message = "Invalid Age";
-                return crv;
-            }
 
             var customer = queriesCustomer.GetCustomer(id);
 
@@ -106,7 +105,7 @@ namespace cochesApi.Logic.Validations
             customer.Name = customerRequest.Name;
             customer.Surname = customerRequest.Surname;
             customer.Age = customerRequest.Age;
-            customer.Photo = customerRequest.Photo;
+
             customer.Email = customerRequest.Email;
 
             CustomerResponse customerResponse = new CustomerResponse();
@@ -114,7 +113,7 @@ namespace cochesApi.Logic.Validations
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
             customerResponse.Age = customer.Age;
-            customerResponse.Photo = customer.Photo;
+
             customerResponse.Email = customer.Email;
 
             CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
@@ -128,29 +127,16 @@ namespace cochesApi.Logic.Validations
         }
         public CustomerResponseValidation CreateCustomer(CustomerRequest customerRequest)
         {
-            bool ageOk = false;
-            var ages = Enum.GetValues(typeof(CustomerAge));
-            foreach (CustomerAge age in ages)
-            {
-                if (customerRequest.Age == age)
-                {
-                    ageOk = true;
-                }
-            }
+
             CustomerResponseValidation crv = new CustomerResponseValidation(null);
 
-            if (!ageOk)
-            {
-                crv.Status = false;
-                crv.Message = "Invalid Age";
-                return crv;
-            }
+
 
             Customer customer = new Customer();
             customer.Name = customerRequest.Name;
             customer.Surname = customerRequest.Surname;
             customer.Age = customerRequest.Age;
-            customer.Photo = customerRequest.Photo;
+
             customer.Email = customerRequest.Email;
             customer.Password = BCrypt.Net.BCrypt.HashPassword(customerRequest.Password);
 
@@ -159,7 +145,7 @@ namespace cochesApi.Logic.Validations
             customerResponse.Name = customerRequest.Name;
             customerResponse.Surname = customerRequest.Surname;
             customerResponse.Age = customerRequest.Age;
-            customerResponse.Photo = customerRequest.Photo;
+
             customerResponse.Email = customerRequest.Email;
 
             CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
@@ -186,7 +172,7 @@ namespace cochesApi.Logic.Validations
             customerResponse.Name = customer.Name;
             customerResponse.Surname = customer.Surname;
             customerResponse.Age = customer.Age;
-            customerResponse.Photo = customer.Photo;
+
             customerResponse.Email = customer.Email;
 
             CustomerResponseValidation customerResponseValidation = new CustomerResponseValidation(customerResponse);
@@ -196,16 +182,35 @@ namespace cochesApi.Logic.Validations
 
             return customerResponseValidation;
         }
-        public string GetToken(CustomerLoginRequest customerLoginRequest)
+        public TokenResponse GetToken(CustomerLoginRequest customerLoginRequest)
         {
-            if (customerLoginRequest.Equals == null || customerLoginRequest.Password == null) return "Wrong Data";
+            if (customerLoginRequest.Email == "" || customerLoginRequest.Password == "") return new TokenResponse("There are empty fields", null!, false);
 
-            var customer = queriesCustomer.GetCustomerByEmail(customerLoginRequest.Email!);
+            Customer customer;
 
-            if (!BCrypt.Net.BCrypt.Verify(customerLoginRequest.Password, customer.Password)) return "Wrong password";
+            try
+            {
+                customer = queriesCustomer.GetCustomerByEmail(customerLoginRequest.Email!);
+            }
+            catch
+            {
+                return new TokenResponse("Email not found", null!, false);
+            }
+
+
+            if (!BCrypt.Net.BCrypt.Verify(customerLoginRequest.Password, customer.Password)) return new TokenResponse("Wrong password", null!, false);
+
+
+            CustomerResponse customerResponse = new CustomerResponse();
+            customerResponse.Id = customer.Id;
+            customerResponse.Name = customer.Name;
+            customerResponse.Surname = customer.Surname;
+            customerResponse.Age = customer.Age;
+            customerResponse.Email = customer.Email;
+
 
             string token = CreateToken(customer);
-            return token;
+            return new TokenResponse(token, customerResponse, true);
         }
         private string CreateToken(Customer customer)
         {

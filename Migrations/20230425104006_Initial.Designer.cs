@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cochesApi.Migrations
 {
     [DbContext(typeof(myAppContext))]
-    [Migration("20230417105050_customerAge")]
-    partial class customerAge
+    [Migration("20230425104006_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,8 +80,8 @@ namespace cochesApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Age")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Age")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
@@ -145,6 +145,15 @@ namespace cochesApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ReturnBranchId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("hasGPS")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("isInternational")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("numberOfDrivers")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

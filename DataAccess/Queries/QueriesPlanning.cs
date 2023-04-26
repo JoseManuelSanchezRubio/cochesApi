@@ -40,6 +40,12 @@ namespace cochesApi.DataAccess.Queries
                     where p.BranchId == branchId && p.TypeCarId == typeCarId && (p.Day.Date >= initialDate.Date && p.Day.Date <= finalDate.Date)
                     select p);
         }
+        public IQueryable GetPlanningsByBranchByDate(int branchId, DateTime initialDate, DateTime finalDate)
+        {
+            return (from p in _context.Plannings
+                    where p.BranchId == branchId && (p.Day.Date >= initialDate.Date && p.Day.Date <= finalDate.Date)
+                    select p);
+        }
         public IQueryable GetOlderPlanningsByBranchByTypeCarByDate(int branchId, int typeCarId, DateTime date)
         {
             return (from p in _context.Plannings

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using cochesApi.Logic.Validations;
 using cochesApi.Logic.Interfaces;
+using Microsoft.AspNetCore.Cors;
 
 namespace cochesApi.Controllers
 {
@@ -48,7 +49,7 @@ namespace cochesApi.Controllers
             return reservationValidation.UpdateReservation(id, reservationRequest);
         }
 
-        [HttpPost]
+        [HttpPost("reservationOnSameBranch")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "customer")]
         public ReservationResponseValidation PostReservation(ReservationRequest reservationRequest)

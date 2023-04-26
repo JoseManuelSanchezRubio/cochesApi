@@ -62,7 +62,8 @@ namespace cochesApi.Logic.Validations
         {
             var reservation = queriesReservation.GetReservation(id);
 
-            if (reservation == null){
+            if (reservation == null)
+            {
                 ReservationResponseValidation rrv = new ReservationResponseValidation(null);
                 rrv.Status = false;
                 rrv.Message = "Reservation not found";
@@ -89,12 +90,14 @@ namespace cochesApi.Logic.Validations
             var reservation = queriesReservation.GetReservation(id);
 
             ReservationResponseValidation rrv = new ReservationResponseValidation(null);
-            if (reservation == null){
+            if (reservation == null)
+            {
                 rrv.Status = false;
                 rrv.Message = "Reservation not found";
             }
 
-            if (reservationRequest.numberOfDrivers > 3){
+            if (reservationRequest.numberOfDrivers > 3)
+            {
                 rrv.Status = false;
                 rrv.Message = "Number of drivers must be less than 3";
             }
@@ -129,31 +132,36 @@ namespace cochesApi.Logic.Validations
 
             ReservationResponseValidation rrv = new ReservationResponseValidation(null);
 
-            if (reservationRequest.InitialDate > reservationRequest.FinalDate){
+            if (reservationRequest.InitialDate > reservationRequest.FinalDate)
+            {
                 rrv.Status = false;
                 rrv.Message = "Initial Date must be less than Final Date";
                 return rrv;
             }
 
-            if (reservationRequest.numberOfDrivers > 3){
+            if (reservationRequest.numberOfDrivers > 3)
+            {
                 rrv.Status = false;
                 rrv.Message = "Number of drivers must be less than 3";
                 return rrv;
             }
 
-            if (typeCar?.Cars == null){
+            if (typeCar?.Cars == null)
+            {
                 rrv.Status = false;
                 rrv.Message = "TypeCar empty";
                 return rrv;
             }
 
-            if (branch == null){
+            if (branch == null)
+            {
                 rrv.Status = false;
                 rrv.Message = "Branch does not exist";
                 return rrv;
             }
 
-            if (customer == null){
+            if (customer == null)
+            {
                 rrv.Status = false;
                 rrv.Message = "Customer does not exist";
                 return rrv;
@@ -163,7 +171,8 @@ namespace cochesApi.Logic.Validations
 
             foreach (Planning planning in plannings)
             {
-                if (planning.AvailableCars == 0){
+                if (planning.AvailableCars == 0)
+                {
                     rrv.Status = false;
                     rrv.Message = "Planning available cars is 0";
                     return rrv;
@@ -235,42 +244,49 @@ namespace cochesApi.Logic.Validations
 
             ReservationResponseValidation rrv = new ReservationResponseValidation(null);
 
-            if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate){
+            if (reservationRequestDifferentBranch.InitialDate > reservationRequestDifferentBranch.FinalDate)
+            {
                 rrv.Status = false;
                 rrv.Message = "Initial Date must be less than Final Date";
                 return rrv;
             }
 
-            if (reservationRequestDifferentBranch.numberOfDrivers > 3){
+            if (reservationRequestDifferentBranch.numberOfDrivers > 3)
+            {
                 rrv.Status = false;
                 rrv.Message = "Number of drivers must be less than 3";
                 return rrv;
             }
 
-            if (typeCar?.Cars == null){
+            if (typeCar?.Cars == null)
+            {
                 rrv.Status = false;
                 rrv.Message = "TypeCar empty";
                 return rrv;
             }
 
-            if (pickUpBranch == null){
+            if (pickUpBranch == null)
+            {
                 rrv.Status = false;
                 rrv.Message = "PickUpBranch does not exist";
                 return rrv;
             }
-            if (returnBranch == null){
+            if (returnBranch == null)
+            {
                 rrv.Status = false;
                 rrv.Message = "ReturnBranch does not exist";
                 return rrv;
             }
 
-            if (customer == null){
+            if (customer == null)
+            {
                 rrv.Status = false;
                 rrv.Message = "Customer does not exist";
                 return rrv;
             }
 
-            if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0){
+            if (queriesPlanning.GetNumberOfAvailableCarsByBranchByTypeCarByDate(reservationRequestDifferentBranch.PickUpBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.InitialDate) == 0)
+            {
                 rrv.Status = false;
                 rrv.Message = "Planning available cars is 0";
                 return rrv;
@@ -348,7 +364,8 @@ namespace cochesApi.Logic.Validations
         {
             var reservation = queriesReservation.GetReservation(id);
 
-            if (reservation == null){
+            if (reservation == null)
+            {
                 ReservationResponseValidation rrv = new ReservationResponseValidation(null);
                 rrv.Status = false;
                 rrv.Message = "Reservation does not exist";

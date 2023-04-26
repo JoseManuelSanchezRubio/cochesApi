@@ -280,34 +280,40 @@ namespace cochesApi.Logic.Validations
             }
             return carsList;
         }
-        public List<CarResponse> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
+        public List<int> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
         {
             var branch = queriesBranch.GetBranch(branchId);
 
-            if (branch == null) return new List<CarResponse>();
+            if (branch == null) return new List<int>();
 
-            if (initialDate > finalDate) return new List<CarResponse>();
+            if (initialDate > finalDate) return new List<int>();
 
-            var cars = queriesCar.GetAvailableCarsByBranch(branchId);
+            var plannings = queriesPlanning.GetPlanningsByBranchByDate(branchId, initialDate, finalDate);
+            List<TypeCar> typeCars = queriesTypeCar.GetTypeCars();
+            List<int> typeCarsIds = new List<int>();
 
-            List<CarResponse> availableCars = new List<CarResponse>();
-            foreach (Car car in cars)
+            foreach (TypeCar typeCar in typeCars)
             {
-                if (isCarAvailable(car, initialDate, finalDate))
+                typeCarsIds.Add(typeCar.Id);
+            }
+
+            foreach (Planning planning in plannings)
+            {
+                foreach (TypeCar typeCar in typeCars)
                 {
-                    CarResponse carResponse = new CarResponse();
-                    carResponse.Id = car.Id;
-                    carResponse.Brand = car.Brand;
-                    carResponse.Model = car.Model;
-                    carResponse.isAutomatic = car.isAutomatic;
-                    carResponse.isGasoline = car.isGasoline;
-                    carResponse.BranchId = car.BranchId;
-                    carResponse.TypeCarId = car.TypeCarId;
-                    availableCars.Add(carResponse);
+                    if (planning.TypeCarId == typeCar.Id)
+                    {
+                        if (planning.AvailableCars == 0)
+                        {
+                            typeCarsIds.Remove(typeCar.Id);
+                        }
+                    }
+
                 }
             }
 
-            return availableCars;
+
+            return typeCarsIds;
         }
         private bool isCarAvailable(Car car, DateTime? initialDate, DateTime? finalDate)
         {

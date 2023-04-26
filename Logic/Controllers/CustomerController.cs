@@ -48,7 +48,7 @@ namespace cochesApi.Controllers
         }
 
         [HttpPost("login")]
-        public string GetToken(CustomerLoginRequest customerLoginRequest)
+        public TokenResponse GetToken(CustomerLoginRequest customerLoginRequest)
         {
             return customerValidation.GetToken(customerLoginRequest);
 

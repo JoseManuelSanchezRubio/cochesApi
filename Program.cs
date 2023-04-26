@@ -10,7 +10,21 @@ using cochesApi.Logic.Interfaces;
 using cochesApi.Logic.Validations;
 using cochesApi.DataAccess.Queries;
 
+//var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
+
+/* builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173")
+                          .WithMethods("GET", "POST", "PUT", "DELETE")
+                          .AllowAnyHeader()
+                          .AllowCredentials();
+                      });
+}); */
 
 // Add services to the container.
 
@@ -81,9 +95,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseCors(x => x.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .WithOrigins("http://localhost:5173")
+                            .AllowCredentials());
+
 
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
