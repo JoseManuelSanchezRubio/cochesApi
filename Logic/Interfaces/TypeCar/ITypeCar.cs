@@ -6,7 +6,7 @@ namespace cochesApi.Logic.Interfaces
 {
     public interface ITypeCar
     {
-        List<TypeCarRequest> GetTypeCars();
+        List<TypeCarResponse> GetTypeCars();
         TypeCarResponseValidation GetTypeCar(int id);
         TypeCarResponseValidation UpdateTypeCar(int id, TypeCarRequest typeCarRequest);
         TypeCarResponseValidation CreateTypeCar(TypeCarRequest typeCarRequest);

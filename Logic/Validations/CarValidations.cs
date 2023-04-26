@@ -104,10 +104,6 @@ namespace cochesApi.Logic.Validations
                 return crv;
             }
 
-            car.Model = carRequest.Model;
-            car.Brand = carRequest.Brand;
-            car.isAutomatic = carRequest.isAutomatic;
-            car.isGasoline = carRequest.isGasoline;
             car.BranchId = carRequest.BranchId;
             car.TypeCarId = carRequest.TypeCarId;
             car.Branch = branch;
@@ -147,10 +143,10 @@ namespace cochesApi.Logic.Validations
             var typeCar = queriesTypeCar.GetTypeCar(carRequest.TypeCarId);
 
             Car car = new Car();
-            car.Model = carRequest.Model;
-            car.Brand = carRequest.Brand;
-            car.isAutomatic = carRequest.isAutomatic;
-            car.isGasoline = carRequest.isGasoline;
+            car.Model = typeCar.Model;
+            car.Brand = typeCar.Brand;
+            car.isAutomatic = typeCar.IsAutomatic;
+            car.isGasoline = typeCar.IsGasoline;
             car.BranchId = carRequest.BranchId;
             car.TypeCarId = carRequest.TypeCarId;
             car.Branch = branch;
@@ -159,10 +155,10 @@ namespace cochesApi.Logic.Validations
             CarResponse carResponse = new CarResponse();
             carResponse.BranchId = carRequest.BranchId;
             carResponse.TypeCarId = carRequest.TypeCarId;
-            car.Model = carRequest.Model;
-            car.Brand = carRequest.Brand;
-            car.isAutomatic = carRequest.isAutomatic;
-            car.isGasoline = carRequest.isGasoline;
+            car.Model = typeCar.Model;
+            car.Brand = typeCar.Brand;
+            car.isAutomatic = typeCar.IsAutomatic;
+            car.isGasoline = typeCar.IsGasoline;
 
             CarResponseValidation carResponseValidation = new CarResponseValidation(carResponse);
 
@@ -280,21 +276,21 @@ namespace cochesApi.Logic.Validations
             }
             return carsList;
         }
-        public List<int> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
+        public List<TypeCarResponse> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
         {
             var branch = queriesBranch.GetBranch(branchId);
 
-            if (branch == null) return new List<int>();
+            if (branch == null) return new List<TypeCarResponse>();
 
-            if (initialDate > finalDate) return new List<int>();
+            if (initialDate > finalDate) return new List<TypeCarResponse>();
 
             var plannings = queriesPlanning.GetPlanningsByBranchByDate(branchId, initialDate, finalDate);
             List<TypeCar> typeCars = queriesTypeCar.GetTypeCars();
-            List<int> typeCarsIds = new List<int>();
+            List<TypeCar> typeCarsList = new List<TypeCar>();
 
             foreach (TypeCar typeCar in typeCars)
             {
-                typeCarsIds.Add(typeCar.Id);
+                typeCarsList.Add(typeCar);
             }
 
             foreach (Planning planning in plannings)
@@ -305,15 +301,29 @@ namespace cochesApi.Logic.Validations
                     {
                         if (planning.AvailableCars == 0)
                         {
-                            typeCarsIds.Remove(typeCar.Id);
+                            typeCarsList.Remove(typeCar);
                         }
                     }
 
                 }
             }
 
+            List<TypeCarResponse> typeCarsResponse = new List<TypeCarResponse>();
+            foreach (TypeCar typeCar in typeCarsList)
+            {
+                TypeCarResponse typeCarResponse = new TypeCarResponse();
+                typeCarResponse.Id = typeCar.Id;
+                typeCarResponse.Name = typeCar.Name;
+                typeCarResponse.Brand = typeCar.Brand;
+                typeCarResponse.Model = typeCar.Model;
+                typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
+                typeCarResponse.IsGasoline = typeCar.IsGasoline;
+                typeCarsResponse.Add(typeCarResponse);
 
-            return typeCarsIds;
+            }
+
+
+            return typeCarsResponse;
         }
         private bool isCarAvailable(Car car, DateTime? initialDate, DateTime? finalDate)
         {

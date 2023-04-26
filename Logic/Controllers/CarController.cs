@@ -58,7 +58,7 @@ namespace cochesApi.Controllers
 
 
         [HttpGet("availability/{branchId}/{initialDate}/{finalDate}")]
-        public List<int> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
+        public List<TypeCarResponse> GetAvailableCarsByBranchAndDate(int branchId, DateTime initialDate, DateTime finalDate)
         {
             return carValidation.GetAvailableCarsByBranchAndDate(branchId, initialDate, finalDate);
         }

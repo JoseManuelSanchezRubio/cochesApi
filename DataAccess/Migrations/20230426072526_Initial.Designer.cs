@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cochesApi.Migrations
 {
     [DbContext(typeof(myAppContext))]
-    [Migration("20230425104006_Initial")]
+    [Migration("20230426072526_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -172,6 +172,18 @@ namespace cochesApi.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Brand")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsAutomatic")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsGasoline")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");

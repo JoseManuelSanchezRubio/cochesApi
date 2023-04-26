@@ -16,7 +16,7 @@ namespace cochesApi.Controllers
         }
 
         [HttpGet]
-        public List<TypeCarRequest> GetTypeCars()
+        public List<TypeCarResponse> GetTypeCars()
         {
             return typeCarValidation.GetTypeCars();
         }

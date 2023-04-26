@@ -6,11 +6,11 @@ namespace cochesApi.Logic.Validations
 {
     public class TypeCarResponseValidation
     {
-        public TypeCarRequest? TypeCarResponse { get; set; }
+        public TypeCarResponse? TypeCarResponse { get; set; }
         public bool Status { get; set; }
         public string? Message { get; set; }
 
-        public TypeCarResponseValidation(TypeCarRequest? typeCarResponse)
+        public TypeCarResponseValidation(TypeCarResponse? typeCarResponse)
         {
             TypeCarResponse = typeCarResponse;
             Status = true;
@@ -27,30 +27,43 @@ namespace cochesApi.Logic.Validations
             queriesDB = _queries;
         }
 
-        public List<TypeCarRequest> GetTypeCars()
+        public List<TypeCarResponse> GetTypeCars()
         {
             var types = queriesTypeCar.GetTypeCars();
-            List<TypeCarRequest> typesRequest = new List<TypeCarRequest>();
+            List<TypeCarResponse> typesResponse = new List<TypeCarResponse>();
             foreach (TypeCar type in types)
             {
-                TypeCarRequest t = new TypeCarRequest(type.Name!);
-                typesRequest.Add(t);
+                TypeCarResponse t = new TypeCarResponse();
+                t.Id = type.Id;
+                t.Name = type.Name;
+                t.Brand = type.Brand;
+                t.Model = type.Model;
+                t.IsAutomatic = type.IsAutomatic;
+                t.IsGasoline = type.IsGasoline;
+                typesResponse.Add(t);
             }
-            return typesRequest;
+            return typesResponse;
         }
         public TypeCarResponseValidation GetTypeCar(int id)
         {
             var typeCar = queriesTypeCar.GetTypeCar(id)!;
 
-            if (typeCar == null){
+            if (typeCar == null)
+            {
                 TypeCarResponseValidation trv = new TypeCarResponseValidation(null);
                 trv.Status = false;
                 trv.Message = "TypeCar does not exist";
             }
 
-            TypeCarRequest typeCarRequest = new TypeCarRequest(typeCar!.Name!);
+            TypeCarResponse typeCarResponse = new TypeCarResponse();
+            typeCarResponse.Id = typeCar!.Id;
+            typeCarResponse.Name = typeCar.Name;
+            typeCarResponse.Brand = typeCar.Brand;
+            typeCarResponse.Model = typeCar.Model;
+            typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
+            typeCarResponse.IsGasoline = typeCar.IsGasoline;
 
-            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarRequest);
+            TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 
             return typeCarResponseValidation;
         }
@@ -59,7 +72,8 @@ namespace cochesApi.Logic.Validations
         {
             var typeCar = queriesTypeCar.GetTypeCar(id);
 
-            if (typeCar == null){
+            if (typeCar == null)
+            {
                 TypeCarResponseValidation trv = new TypeCarResponseValidation(null);
                 trv.Status = false;
                 trv.Message = "TypeCar does not exist";
@@ -67,8 +81,19 @@ namespace cochesApi.Logic.Validations
             }
 
             typeCar.Name = typeCarRequest.Name;
+            typeCar.Brand = typeCarRequest.Brand;
+            typeCar.Model = typeCarRequest.Model;
+            typeCar.IsAutomatic = typeCarRequest.IsAutomatic;
+            typeCar.IsGasoline = typeCarRequest.IsGasoline;
 
-            TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
+
+            TypeCarResponse typeCarResponse = new TypeCarResponse();
+            typeCarResponse.Id = typeCar!.Id;
+            typeCarResponse.Name = typeCar.Name;
+            typeCarResponse.Brand = typeCar.Brand;
+            typeCarResponse.Model = typeCar.Model;
+            typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
+            typeCarResponse.IsGasoline = typeCar.IsGasoline;
 
             TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 
@@ -82,8 +107,19 @@ namespace cochesApi.Logic.Validations
         {
             TypeCar typeCar = new TypeCar();
             typeCar.Name = typeCarRequest.Name;
+            typeCar.Brand = typeCarRequest.Brand;
+            typeCar.Model = typeCarRequest.Model;
+            typeCar.IsAutomatic = typeCarRequest.IsAutomatic;
+            typeCar.IsGasoline = typeCarRequest.IsGasoline;
 
-            TypeCarRequest typeCarResponse = new TypeCarRequest(typeCarRequest.Name!);
+
+            TypeCarResponse typeCarResponse = new TypeCarResponse();
+            typeCarResponse.Id = typeCar.Id;
+            typeCarResponse.Name = typeCar.Name;
+            typeCarResponse.Brand = typeCar.Brand;
+            typeCarResponse.Model = typeCar.Model;
+            typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
+            typeCarResponse.IsGasoline = typeCar.IsGasoline;
 
             TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 
@@ -96,9 +132,15 @@ namespace cochesApi.Logic.Validations
         {
             var typeCar = queriesTypeCar.GetTypeCar(id);
 
-            if (typeCar == null) return null!;
+            if (typeCar == null) return new TypeCarResponseValidation(null);
 
-            TypeCarRequest typeCarResponse = new TypeCarRequest(typeCar.Name!);
+            TypeCarResponse typeCarResponse = new TypeCarResponse();
+            typeCarResponse.Id = typeCar!.Id;
+            typeCarResponse.Name = typeCar.Name;
+            typeCarResponse.Brand = typeCar.Brand;
+            typeCarResponse.Model = typeCar.Model;
+            typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
+            typeCarResponse.IsGasoline = typeCar.IsGasoline;
 
             TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 

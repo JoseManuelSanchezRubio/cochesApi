@@ -1,8 +1,9 @@
 namespace cochesApi.Logic.Models;
 public class TypeCarRequest
 {
-    public TypeCarRequest(string name){
-        Name=name;
-    }
     public string? Name { get; set; }
+    public string? Brand { get; set; }
+    public string? Model { get; set; }
+    public bool IsAutomatic { get; set; }
+    public bool IsGasoline { get; set; }
 }

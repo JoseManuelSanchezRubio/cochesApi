@@ -170,6 +170,18 @@ namespace cochesApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Brand")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsAutomatic")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsGasoline")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
