@@ -6,4 +6,5 @@ public class TypeCarRequest
     public string? Model { get; set; }
     public bool IsAutomatic { get; set; }
     public bool IsGasoline { get; set; }
+    public double Price { get; set; }
 }

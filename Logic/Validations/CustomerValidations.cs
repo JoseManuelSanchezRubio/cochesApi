@@ -217,7 +217,11 @@ namespace cochesApi.Logic.Validations
             var jwt = _configuration.GetSection("Jwt").Get<Jwt>();
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt!.Key!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var claims = new[]
+            var claims = new[] { new Claim(JwtRegisteredClaimNames.Sub, customer.Id.ToString()) };
+
+            if (customer.Role == 0)
+            {
+                claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject!),
                 new Claim(JwtRegisteredClaimNames.Aud, jwt.Audience!),
@@ -225,6 +229,18 @@ namespace cochesApi.Logic.Validations
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Role, "customer")
             };
+            }
+            else
+            {
+                claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, jwt.Subject!),
+                new Claim(JwtRegisteredClaimNames.Aud, jwt.Audience!),
+                new Claim(JwtRegisteredClaimNames.Iss, jwt.Issuer!),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, "admin")
+            };
+            }
 
             var token = new JwtSecurityToken(
                 issuer: jwt.Issuer,

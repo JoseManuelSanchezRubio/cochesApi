@@ -47,6 +47,7 @@ namespace cochesApi.Logic.Validations
                 carResponse.isAutomatic = car.isAutomatic;
                 carResponse.isGasoline = car.isGasoline;
                 carResponse.TypeCarId = car.TypeCarId;
+                carResponse.Price = car.Price;
                 carsResponse.Add(carResponse);
             }
             return carsResponse;
@@ -71,6 +72,7 @@ namespace cochesApi.Logic.Validations
             carResponse.isAutomatic = car.isAutomatic;
             carResponse.isGasoline = car.isGasoline;
             carResponse.TypeCarId = car.TypeCarId;
+            carResponse.Price = car.Price;
 
             CarResponseValidation carResponseValidation = new CarResponseValidation(carResponse);
             return carResponseValidation;
@@ -117,13 +119,14 @@ namespace cochesApi.Logic.Validations
             carResponse.isGasoline = car.isGasoline;
             carResponse.BranchId = car.BranchId;
             carResponse.TypeCarId = car.TypeCarId;
+            carResponse.Price = car.Price;
 
             CarResponseValidation carResponseValidation = new CarResponseValidation(carResponse);
 
             var oldPlannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(firstBranchId, firstTypeCarId, DateTime.Now.Date, queriesPlanning.GetPlanning(queriesPlanning.GetPlannings().Count).Day.Date);
             foreach (Planning planning in oldPlannings)
             {
-                planning.AvailableCars--;
+                if (planning.AvailableCars > 0) planning.AvailableCars--;
             }
             var newPlannings = queriesPlanning.GetPlanningsByBranchByTypeCarByDate(carRequest.BranchId, carRequest.TypeCarId, DateTime.Now, queriesPlanning.GetPlanning(queriesPlanning.GetPlannings().Count).Day);
             foreach (Planning planning in newPlannings)
@@ -151,6 +154,7 @@ namespace cochesApi.Logic.Validations
             car.TypeCarId = carRequest.TypeCarId;
             car.Branch = branch;
             car.TypeCar = typeCar;
+            car.Price = typeCar.Price;
 
             CarResponse carResponse = new CarResponse();
             carResponse.BranchId = carRequest.BranchId;
@@ -159,6 +163,7 @@ namespace cochesApi.Logic.Validations
             car.Brand = typeCar.Brand;
             car.isAutomatic = typeCar.IsAutomatic;
             car.isGasoline = typeCar.IsGasoline;
+            car.Price = typeCar.Price;
 
             CarResponseValidation carResponseValidation = new CarResponseValidation(carResponse);
 
@@ -209,7 +214,7 @@ namespace cochesApi.Logic.Validations
             {
                 if (planning.BranchId == car.BranchId && planning.TypeCarId == car.TypeCarId)
                 {
-                    planning.AvailableCars--;
+                    if (planning.AvailableCars > 0) planning.AvailableCars--;
                 }
             }
 
@@ -246,6 +251,7 @@ namespace cochesApi.Logic.Validations
                     carResponse.isGasoline = car.isGasoline;
                     carResponse.BranchId = car.BranchId;
                     carResponse.TypeCarId = car.TypeCarId;
+                    carResponse.Price = car.Price;
                     carsList.Add(carResponse);
                 }
             }
@@ -271,6 +277,7 @@ namespace cochesApi.Logic.Validations
                     carResponse.isGasoline = car.isGasoline;
                     carResponse.BranchId = car.BranchId;
                     carResponse.TypeCarId = car.TypeCarId;
+                    carResponse.Price = car.Price;
                     carsList.Add(carResponse);
                 }
             }
@@ -318,6 +325,7 @@ namespace cochesApi.Logic.Validations
                 typeCarResponse.Model = typeCar.Model;
                 typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
                 typeCarResponse.IsGasoline = typeCar.IsGasoline;
+                typeCarResponse.Price = typeCar.Price;
                 typeCarsResponse.Add(typeCarResponse);
 
             }

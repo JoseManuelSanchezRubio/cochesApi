@@ -215,7 +215,7 @@ namespace cochesApi.Logic.Validations
 
             foreach (Planning planning in plannings)
             {
-                planning.AvailableCars--;
+                if (planning.AvailableCars > 0) planning.AvailableCars--;
             }
 
             queriesDB.SaveChangesAsync();
@@ -303,6 +303,8 @@ namespace cochesApi.Logic.Validations
                 if (isCarAvailable(car, reservationRequestDifferentBranch.InitialDate, reservationRequestDifferentBranch.FinalDate))
                 {
                     carToBook = car;
+                    car.BranchId = reservationRequestDifferentBranch.ReturnBranchId;
+                    queriesDB.Update(car);
                 }
             }
 
@@ -333,7 +335,7 @@ namespace cochesApi.Logic.Validations
 
             foreach (Planning planning in olderPlanningsPickUpBranch)
             {
-                planning.AvailableCars--;
+                if (planning.AvailableCars > 0) planning.AvailableCars--;
             }
 
             var newerPlanningsReturnBranch = queriesPlanning.GetOlderPlanningsByBranchByTypeCarByDate(reservationRequestDifferentBranch.ReturnBranchId, reservationRequestDifferentBranch.TypeCarId, reservationRequestDifferentBranch.FinalDate);

@@ -10,6 +10,7 @@ public class Customer
     public string? Age { get; set; }
     public string? Email { get; set; }
     public string? Password { get; set; }
+    public int Role { get; set; }
 
     public virtual ICollection<Reservation>? Reservations { get; set; } = new List<Reservation>();
 }

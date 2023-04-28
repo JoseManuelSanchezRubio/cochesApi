@@ -40,6 +40,7 @@ namespace cochesApi.Logic.Validations
                 t.Model = type.Model;
                 t.IsAutomatic = type.IsAutomatic;
                 t.IsGasoline = type.IsGasoline;
+                t.Price = type.Price;
                 typesResponse.Add(t);
             }
             return typesResponse;
@@ -62,6 +63,7 @@ namespace cochesApi.Logic.Validations
             typeCarResponse.Model = typeCar.Model;
             typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
             typeCarResponse.IsGasoline = typeCar.IsGasoline;
+            typeCarResponse.Price = typeCar.Price;
 
             TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 
@@ -85,6 +87,7 @@ namespace cochesApi.Logic.Validations
             typeCar.Model = typeCarRequest.Model;
             typeCar.IsAutomatic = typeCarRequest.IsAutomatic;
             typeCar.IsGasoline = typeCarRequest.IsGasoline;
+            typeCar.Price = typeCarRequest.Price;
 
 
             TypeCarResponse typeCarResponse = new TypeCarResponse();
@@ -94,6 +97,7 @@ namespace cochesApi.Logic.Validations
             typeCarResponse.Model = typeCar.Model;
             typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
             typeCarResponse.IsGasoline = typeCar.IsGasoline;
+            typeCarResponse.Price = typeCar.Price;
 
             TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 
@@ -111,6 +115,7 @@ namespace cochesApi.Logic.Validations
             typeCar.Model = typeCarRequest.Model;
             typeCar.IsAutomatic = typeCarRequest.IsAutomatic;
             typeCar.IsGasoline = typeCarRequest.IsGasoline;
+            typeCar.Price = typeCarRequest.Price;
 
 
             TypeCarResponse typeCarResponse = new TypeCarResponse();
@@ -120,6 +125,7 @@ namespace cochesApi.Logic.Validations
             typeCarResponse.Model = typeCar.Model;
             typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
             typeCarResponse.IsGasoline = typeCar.IsGasoline;
+            typeCarResponse.Price = typeCar.Price;
 
             TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 
@@ -141,6 +147,7 @@ namespace cochesApi.Logic.Validations
             typeCarResponse.Model = typeCar.Model;
             typeCarResponse.IsAutomatic = typeCar.IsAutomatic;
             typeCarResponse.IsGasoline = typeCar.IsGasoline;
+            typeCarResponse.Price = typeCar.Price;
 
             TypeCarResponseValidation typeCarResponseValidation = new TypeCarResponseValidation(typeCarResponse);
 

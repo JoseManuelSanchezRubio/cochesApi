@@ -7,6 +7,7 @@ public class TypeCar
     public string? Model { get; set; }
     public bool IsAutomatic { get; set; }
     public bool IsGasoline { get; set; }
+    public double Price { get; set; }
 
     public virtual ICollection<Car> Cars { get; set; } = new List<Car>();
 }
